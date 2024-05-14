@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /rem
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/REM
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  private_key: "p0EP2GUI6uB8Ax/DfNTWkoI0JKHJ0k0bpU2ulBbOM7yEaE0vbBMjQVWEO9VEHkqI"
