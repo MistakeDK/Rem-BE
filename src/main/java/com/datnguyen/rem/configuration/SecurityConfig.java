@@ -2,6 +2,7 @@ package com.datnguyen.rem.configuration;
 
 import com.datnguyen.rem.enums.Role;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,14 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS={
             "/users","/auth/log-in",
             "/auth/introspect",
-            "/auth/cookie"
+            "/auth/cookie",
+            "/auth/logout"
     };
     private final String[] PRIVATE_ENDPOINTS={
             "/users"
     };
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
     @Value("${jwt.private_key}")
     private String secretkey;
     @Bean
@@ -43,18 +47,18 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
-                        jwtConfigurer.decoder(jwtDecoder())
+                        jwtConfigurer.decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())).
                 authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
-    @Bean
-    JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKeySpec=new SecretKeySpec(secretkey.getBytes(),"HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512).build();
-    };
+//    @Bean
+//    JwtDecoder jwtDecoder(){
+//        SecretKeySpec secretKeySpec=new SecretKeySpec(secretkey.getBytes(),"HS512");
+//        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
+//                .macAlgorithm(MacAlgorithm.HS512).build();
+//    };
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();

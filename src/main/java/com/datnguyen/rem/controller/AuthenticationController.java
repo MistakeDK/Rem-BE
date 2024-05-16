@@ -2,6 +2,7 @@ package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.AuthenticationRequest;
 import com.datnguyen.rem.dto.request.IntrospectRequest;
+import com.datnguyen.rem.dto.request.LogoutRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.AuthenticationResponse;
 import com.datnguyen.rem.dto.response.IntrospectResponse;
@@ -49,11 +50,17 @@ public class AuthenticationController {
         return ResponseEntity.ok(apiResponse);
     }
 
-//    @PostMapping("/introspect")
-//    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
-//            throws ParseException, JOSEException {
-//        var result=authenticationService.introspect(request);
-//        return ApiResponse.<IntrospectResponse>builder().
-//                result(result).build();
-//    }
+        @PostMapping("/logout")
+    ApiResponse<String> logout(@RequestBody LogoutRequest request)
+            throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<String>builder().message("Log out success").build();
+    }
+    @PostMapping("/introspect")
+    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
+            throws ParseException, JOSEException {
+        var result=authenticationService.introspect(request);
+        return ApiResponse.<IntrospectResponse>builder().
+                result(result).build();
+    }
 }
