@@ -30,7 +30,8 @@ public class SecurityConfig {
             "/users","/auth/log-in",
             "/auth/introspect",
             "/auth/cookie",
-            "/auth/logout"
+            "/auth/logout",
+            "/auth/refresh"
     };
     private final String[] PRIVATE_ENDPOINTS={
             "/users"

@@ -14,3 +14,5 @@ spring:
     show-sql: true
 jwt:
   private_key: "p0EP2GUI6uB8Ax/DfNTWkoI0JKHJ0k0bpU2ulBbOM7yEaE0vbBMjQVWEO9VEHkqI"
+  valid-duration: 120 # time token can use in second
+  refreshable-duration: 360000 # time token refresh can use for new token
