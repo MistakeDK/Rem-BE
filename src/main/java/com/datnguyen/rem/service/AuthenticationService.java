@@ -96,7 +96,7 @@ public class AuthenticationService {
 
         JWSHeader header=new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet=new JWTClaimsSet.Builder().
-                subject(user.getUsername()).
+                subject(user.getId()).
                 issueTime(new Date()).
                 expirationTime(expiration).
                 claim("scope",BuildScope(user)).
@@ -137,28 +137,14 @@ public class AuthenticationService {
     }
 
     private String BuildScope(User user){
-        //StringJoiner stringJoiner=new StringJoiner("");
-        StringJoiner stringJoiner=new StringJoiner(" ");
-        //if(!CollectionUtils.isEmpty(user.getRole()))
-        //   user.getRole().forEach(stringJoiner::add);
-
-        if(!CollectionUtils.isEmpty(user.getRoles()))
-           user.getRoles().forEach((role)->{
-               stringJoiner.add("ROLE_"+role.getName());
-               if(!CollectionUtils.isEmpty(role.getPermission())){
-                   role.getPermission().forEach(permission -> {
-                       stringJoiner.add(permission.getName());
-                   });
-               }});
+        StringJoiner stringJoiner=new StringJoiner("");
+        if(!user.getRole().isEmpty())
+           stringJoiner.add(user.getRole());
         return stringJoiner.toString();
     }
     private SignedJWT veryfyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier=new MACVerifier(PRIVATE_KEY.getBytes(StandardCharsets.UTF_8));
         SignedJWT signedJWT=SignedJWT.parse(token);
-//        Date expiryTime=(isRefresh)?
-//        (new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant()
-//                .plus(REFRESHABLE_DURATION,ChronoUnit.SECONDS).toEpochMilli()))
-//        :signedJWT.getJWTClaimsSet().getExpirationTime();
         Date expiryTime=signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified= signedJWT.verify(verifier);
         if(!(verified && expiryTime.after(new Date()))){

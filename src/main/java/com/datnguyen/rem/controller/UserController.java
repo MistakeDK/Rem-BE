@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class UserController {
     }
     @GetMapping("/myInfo")
     ResponseEntity<ApiResponse<?>> getMyInfo(){
-        ApiResponse apiResponse=ApiResponse.<UserResponse>builder().result(userService.getMyInfo()).build();
+        ApiResponse<UserResponse> apiResponse=ApiResponse.<UserResponse>builder().result(userService.getMyInfo()).build();
         return ResponseEntity.ok().body(apiResponse);
     }
     @PutMapping("/{idUser}")

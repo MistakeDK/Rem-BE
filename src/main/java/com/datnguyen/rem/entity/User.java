@@ -3,8 +3,11 @@ package com.datnguyen.rem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -25,6 +28,7 @@ public class User {
     String phone;
     LocalDate dob;
     Boolean isActive;
-    @ManyToMany
-    Set<Role> roles;
+    String role;
+    @CreationTimestamp
+    Date timeStamp;
 }
