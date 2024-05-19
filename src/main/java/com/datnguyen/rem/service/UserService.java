@@ -1,6 +1,5 @@
 package com.datnguyen.rem.service;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.UserResponse;
@@ -12,16 +11,10 @@ import com.datnguyen.rem.mapper.UserMapper;
 import com.datnguyen.rem.repository.UserRepository;
 import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.id.uuid.StandardRandomStrategy;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -56,6 +47,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER.name());
         user.setIsActive(false);
+        user.setIsBan(false);
         userRepository.save(user);
         mailService.sendVerificationEmail(user);
         return userMapper.toUserResponse(user);
@@ -88,7 +80,7 @@ public class UserService {
 
     public void processVerify(String code){
         User user= userRepository.findByverificationCode(code).
-                orElseThrow(()->new AppException(ErrorCode.VERIFYCATIONCODE_NOT_EXIST));
+                orElseThrow(()->new AppException(ErrorCode.VERIFY_CODE_NOT_EXIST));
         user.setIsActive(true);
         userRepository.save(user);
     }

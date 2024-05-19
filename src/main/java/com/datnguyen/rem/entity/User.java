@@ -28,6 +28,8 @@ public class User {
     String phone;
     LocalDate dob;
     Boolean isActive;
+    @Builder.Default
+    Boolean isBan=false;
     String role;
     String verificationCode;
     @CreationTimestamp

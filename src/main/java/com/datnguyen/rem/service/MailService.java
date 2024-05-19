@@ -39,7 +39,6 @@ public class MailService {
             throws MessagingException, IOException, TemplateException {
         String toAddress=user.getEmail();
         String fromAddress=emailAddress;
-        String senderName="Rem Application";
         String subject = "Please verify your registration";
         MimeMessage message=mailSender.createMimeMessage();
         MimeMessageHelper helper=new MimeMessageHelper(message);

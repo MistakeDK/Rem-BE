@@ -40,8 +40,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     ResponseEntity<ApiResponse<String>> handlingAccessDenied(AccessDeniedException accessDeniedException){
         ApiResponse<String> apiResponse=ApiResponse.<String>builder().
-                message(ErrorCode.UNAUTHORIZATION.getMessage()).build();
-        return ResponseEntity.status(ErrorCode.UNAUTHORIZATION.getStatusCode()).body(apiResponse);
+                message(ErrorCode.UN_AUTHORIZATION.getMessage()).build();
+        return ResponseEntity.status(ErrorCode.UN_AUTHORIZATION.getStatusCode()).body(apiResponse);
     }
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse<String>> handlingUncatchException(Exception exception){
