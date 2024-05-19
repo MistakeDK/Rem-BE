@@ -6,6 +6,8 @@ import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.UserResponse;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.service.UserService;
+import freemarker.template.TemplateException;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 
 @RestController
 @RequestMapping("/users")
@@ -25,7 +30,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     UserService userService;
     @PostMapping
-    ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody UserCreationRequest request){
+    ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody UserCreationRequest request)
+            throws MessagingException, IOException, TemplateException {
         ApiResponse<UserResponse> apiResponse= ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request)).build();
         return ResponseEntity.ok().body(apiResponse);
@@ -59,6 +65,12 @@ public class UserController {
     ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable("idUser") String id){
         userService.deleteUser(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("delete success").build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+    @PatchMapping("/{verificationCode}")
+    ResponseEntity<?> processVerifyUser(@PathVariable("verificationCode") String code){
+        userService.processVerify(code);
+        ApiResponse<?> apiResponse= ApiResponse.builder().message("Active Success").build();
         return ResponseEntity.ok().body(apiResponse);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNAUTHORIZATION("don't have permission",HttpStatus.FORBIDDEN),
     UNAUTHENTICATED( "not authenticated",HttpStatus.UNAUTHORIZED),
+    VERIFYCATIONCODE_NOT_EXIST("code is not exist",HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST( "User not found",HttpStatus.NOT_FOUND),
     PASSWORD_INVALID( "password must be at least {min} characters",HttpStatus.BAD_REQUEST),
     USERNAME_INVALID("username must be at least {min} characters",HttpStatus.BAD_REQUEST),

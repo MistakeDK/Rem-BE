@@ -29,6 +29,7 @@ public class User {
     LocalDate dob;
     Boolean isActive;
     String role;
+    String verificationCode;
     @CreationTimestamp
     Date timeStamp;
 }

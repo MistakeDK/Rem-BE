@@ -26,12 +26,16 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    private final HttpMethod[] PUBLIC_METHOD={
+            HttpMethod.GET,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT
+    };
     private final String[] PUBLIC_ENDPOINTS={
-            "/users","/auth/log-in",
+            "/users/**","/auth/log-in",
             "/auth/introspect",
             "/auth/cookie",
             "/auth/logout",
-            "/auth/refresh"
+            "/auth/refresh",
+
     };
     private final String[] PRIVATE_ENDPOINTS={
             "/users"
@@ -43,7 +47,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests
-                (request -> request.requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).
+                (request -> request.requestMatchers(PUBLIC_ENDPOINTS).
                 permitAll()
                         .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->

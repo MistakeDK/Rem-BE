@@ -12,6 +12,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gunnyfifa3@gmail.com
+    password: pfdq jmxp ieis pwkh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+dev:
+  site: http://localhost:5173/
+
 jwt:
   private_key: "p0EP2GUI6uB8Ax/DfNTWkoI0JKHJ0k0bpU2ulBbOM7yEaE0vbBMjQVWEO9VEHkqI"
   valid-duration: 120 # time token can use in second

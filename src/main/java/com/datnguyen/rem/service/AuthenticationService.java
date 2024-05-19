@@ -111,6 +111,9 @@ public class AuthenticationService {
     public AuthenticationResponse authentication(AuthenticationRequest request) throws JOSEException {
         var user=userRepository.findByusername(
                 request.getUsername()).orElseThrow(()-> new  AppException(ErrorCode.USER_NOT_EXIST));
+        if(!user.getIsActive()){
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
         PasswordEncoder passwordEncoder=new BCryptPasswordEncoder(10);
         boolean authenticated= passwordEncoder.matches(request.getPassword(),user.getPassword());
         if(!authenticated){
