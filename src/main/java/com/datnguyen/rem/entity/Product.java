@@ -1,5 +1,6 @@
 package com.datnguyen.rem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,12 +17,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     String name;
-    String price;
+    Double price;
     String img;
     @Builder.Default
     boolean isActive=true;
     String description;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     Category category;
 }

@@ -44,6 +44,7 @@ public class UserController {
         ApiResponse<?> apiResponse=ApiResponse.builder().result(userService.getList()).build();
         return ResponseEntity.ok().body(apiResponse);
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{idUser}")
     ResponseEntity<ApiResponse<?>> getUser(@PathVariable("idUser") String id){
         var authentication=SecurityContextHolder.getContext().getAuthentication();
@@ -61,6 +62,7 @@ public class UserController {
         ApiResponse<?> apiResponse=ApiResponse.builder().result(userService.updateUser(id,request)).build();
         return ResponseEntity.ok().body(apiResponse);
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{idUser}")
     ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable("idUser") String id){
         userService.deleteUser(id);

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -21,6 +23,10 @@ public class CategoryService {
         }
         Category category=Category.builder().name(request.getName()).build();
         categoryRepository.save(category);
+    }
+    public List<Category> getList(){
+        var result=categoryRepository.findAll();
+        return result.stream().toList();
     }
     public void deleteByID(String id){
         categoryRepository.deleteById(id);
