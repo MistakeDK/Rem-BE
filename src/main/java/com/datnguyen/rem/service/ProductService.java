@@ -32,6 +32,10 @@ public class ProductService {
                 orElseThrow(()->new AppException(ErrorCode.CATEGORY_NOT_EXISTED)));
         productRepository.save(product);
     }
+    public Product getProductById(String id){
+        return productRepository.findById(id).
+                orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
+    }
     public List<Product> getList(){
         List<Product> products= productRepository.findAll();
         return products;

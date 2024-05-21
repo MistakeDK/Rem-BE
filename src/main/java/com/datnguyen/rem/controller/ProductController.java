@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.cloudinary.Api;
 import com.datnguyen.rem.dto.request.ProductRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
+import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.service.CloundinaryService;
 import com.datnguyen.rem.service.ProductService;
 import jakarta.validation.Valid;
@@ -30,6 +31,12 @@ public class ProductController {
     public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) throws IOException {
         productService.addProduct(request);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Add product success").build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable String id){
+        Product product=productService.getProductById(id);
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(product).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 

@@ -34,7 +34,6 @@ public class CategoryController {
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Delete Success").build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("")
     public  ResponseEntity<?> getListCategory(){
         ApiResponse<?> result= ApiResponse.builder().result(categoryService.getList()).build();

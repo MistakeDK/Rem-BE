@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/auth/cookie",
             "/auth/logout",
             "/auth/refresh",
-            "/products"
+            "/products/**",
+            "/category/**"
 
     };
     private final String[] PRIVATE_ENDPOINTS={

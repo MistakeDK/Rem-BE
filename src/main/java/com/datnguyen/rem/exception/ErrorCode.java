@@ -18,7 +18,8 @@ public enum ErrorCode {
     USER_EXISTED("User is Existed",HttpStatus.BAD_REQUEST),
     CATEGORY_EXISTED("Category is Existed",HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_EXISTED("Category is not existed",HttpStatus.BAD_REQUEST),
-    PRICE_INVALID("Price must be greater than 10000",HttpStatus.BAD_REQUEST);
+    PRICE_INVALID("Price must be greater than 10000",HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_EXIST("Product is not exist",HttpStatus.BAD_REQUEST);
     final String message;
     final HttpStatus statusCode;
 }
