@@ -28,7 +28,7 @@ import java.text.ParseException;
 public class AuthenticationController {
     AuthenticationService authenticationService;
 
-    @PostMapping("/log-in")
+    @PostMapping("/logIn")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws JOSEException {
         var result = authenticationService.authentication(request);
         return ApiResponse.<AuthenticationResponse>builder().

@@ -1,6 +1,7 @@
 package com.datnguyen.rem.mapper;
 
 import com.datnguyen.rem.dto.request.ProductRequest;
+import com.datnguyen.rem.dto.response.ProductResponse;
 import com.datnguyen.rem.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,4 +10,5 @@ import org.mapstruct.Mapping;
 public interface ProductMapper {
     @Mapping(target = "category", ignore = true)
     Product toProduct(ProductRequest productRequest);
+    ProductResponse toProductResponse(Product product);
 }

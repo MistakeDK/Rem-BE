@@ -24,6 +24,7 @@ public class User {
     @Column(unique = true)
     String username;
     String password;
+    @Column(unique = true)
     String email;
     String phone;
     LocalDate dob;

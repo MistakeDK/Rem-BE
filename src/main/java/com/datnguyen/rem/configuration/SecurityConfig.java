@@ -30,7 +30,7 @@ public class SecurityConfig {
             HttpMethod.GET,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT
     };
     private final String[] PUBLIC_ENDPOINTS={
-            "/users/**","/auth/log-in",
+            "/users/**","/auth/logIn",
             "/auth/introspect",
             "/auth/cookie",
             "/auth/logout",

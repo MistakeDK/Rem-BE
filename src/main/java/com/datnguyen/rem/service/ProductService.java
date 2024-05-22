@@ -1,6 +1,7 @@
 package com.datnguyen.rem.service;
 
 import com.datnguyen.rem.dto.request.ProductRequest;
+import com.datnguyen.rem.dto.response.ProductResponse;
 import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
@@ -36,8 +37,8 @@ public class ProductService {
         return productRepository.findById(id).
                 orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
     }
-    public List<Product> getList(){
-        List<Product> products= productRepository.findAll();
-        return products;
+    public List<ProductResponse> getList(){
+        var products= productRepository.findAll();
+        return products.stream().map(mapper::toProductResponse).toList();
     }
 }
