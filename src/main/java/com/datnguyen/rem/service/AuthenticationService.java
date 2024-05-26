@@ -96,7 +96,7 @@ public class AuthenticationService {
 
         JWSHeader header=new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet=new JWTClaimsSet.Builder().
-                subject(user.getId()).
+                subject(user.getUsername()).
                 issueTime(new Date()).
                 expirationTime(expiration).
                 claim("scope",BuildScope(user)).

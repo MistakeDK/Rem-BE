@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ErrorCode.UN_AUTHORIZATION.getStatusCode()).body(apiResponse);
     }
     @ExceptionHandler(value = Exception.class)
-    ResponseEntity<ApiResponse<String>> handlingUncatchException(Exception exception){
+    ResponseEntity<ApiResponse<String>> handlingUncaughtchException(Exception exception){
         ApiResponse<String> apiResponse=ApiResponse.<String>builder()
                 .message(ErrorCode.CATCH_EXCEPTION_FAIL.getMessage()).build();
         return  ResponseEntity.status(ErrorCode.CATCH_EXCEPTION_FAIL.getStatusCode()).body(apiResponse);

@@ -20,6 +20,5 @@ public class Category {
     String id;
     String name;
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonIgnore
     Set<Product> products;
 }

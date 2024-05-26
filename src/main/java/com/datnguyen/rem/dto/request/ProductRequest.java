@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ProductRequest {
     @Size(min = 4,message = "NAME_INVALID")
     String name;
-    @Min(value = 1000,message = "PRICE_INVALID")
+    @Min(value = 1,message = "PRICE_INVALID")
     Double price;
     String img;
     String description;

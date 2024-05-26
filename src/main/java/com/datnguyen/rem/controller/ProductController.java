@@ -7,6 +7,7 @@ import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.service.CloundinaryService;
 import com.datnguyen.rem.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,8 +42,12 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getList(){
-        var result=productService.getList();
+    public ResponseEntity<?> getList(@RequestParam(defaultValue = "1",required = false) int pageNo,
+                                     @RequestParam(defaultValue = "8",required = false) int pageSize,
+                                     @RequestParam(required = false) String sortBy,
+                                     @RequestParam(required = false) String category,
+                                     @RequestParam(required = false) String... search){
+        var result=productService.getList(pageNo,pageSize,sortBy,category,search);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(result).build();
         return  ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }

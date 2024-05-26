@@ -22,7 +22,7 @@ public class Product {
     @Builder.Default
     boolean isActive=true;
     String description;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     Category category;
 }
