@@ -105,6 +105,8 @@ public class SearchRepository {
         if(StringUtils.hasLength(category)){
             Join<Product, Category> productCategoryJoin=root.join("category");
             Predicate productPredicate=criteriaBuilder.like(productCategoryJoin.get("name"),"%"+category+"%");
+            criteriaList.forEach(queryConsumer);
+            predicate=queryConsumer.getPredicate();
             query.where(predicate,productPredicate);
         }else {
             criteriaList.forEach(queryConsumer);
@@ -139,6 +141,8 @@ public class SearchRepository {
         if(StringUtils.hasLength(category)){
             Join<Product, Category> productCategoryJoin=root.join("category");
             Predicate productPredicate=criteriaBuilder.like(productCategoryJoin.get("name"),"%"+category+"%");
+            criteriaList.forEach(searchConsumer);
+            predicate=searchConsumer.getPredicate();
             query.select(criteriaBuilder.count(root));
             query.where(predicate,productPredicate);
         }else {
