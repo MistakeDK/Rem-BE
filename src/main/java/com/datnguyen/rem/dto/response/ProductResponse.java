@@ -16,6 +16,5 @@ public class ProductResponse {
     String name;
     Double price;
     String img;
-    boolean isActive;
     String description;
 }

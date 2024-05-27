@@ -41,9 +41,9 @@ public class ProductService {
                 orElseThrow(()->new AppException(ErrorCode.CATEGORY_NOT_EXISTED)));
         productRepository.save(product);
     }
-    public Product getProductById(String id){
-        return productRepository.findById(id).
-                orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
+    public ProductResponse getProductById(String id){
+        var product= productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
+        return mapper.toProductResponse(product);
     }
     public PageResponse<?> getList(int pageNo, int pageSize, String sorts,String category,String... search){
 //        if(pageNo>0){

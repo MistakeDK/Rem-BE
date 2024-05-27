@@ -29,11 +29,12 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 @Repository
-//Class use customize query for pagination and search in one field
 public class SearchRepository {
     ProductMapper productMapper;
     @PersistenceContext
     EntityManager entityManager;
+
+    //method use customize query for pagination and search in one field
     public PageResponse<?> getListProductByCustomizeQuery(int pageNo,int pageSize,String search,String sortBy){
         if(pageNo>0){
            pageNo=pageNo-1;
@@ -74,6 +75,7 @@ public class SearchRepository {
                 .items(page.stream().map(o -> productMapper.toProductResponse((Product) o)).toList())
                 .build();
     }
+    //method use to query with criteria
     public PageResponse<?> advancedSearchProductWithCriteria(int pageNo,int pageSize,String sortBy,String category,String... search){
         if(pageNo>0){
             pageNo=pageNo-1;

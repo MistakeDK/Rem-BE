@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.cloudinary.Api;
 import com.datnguyen.rem.dto.request.ProductRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
+import com.datnguyen.rem.dto.response.ProductResponse;
 import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.service.CloundinaryService;
 import com.datnguyen.rem.service.ProductService;
@@ -36,7 +37,7 @@ public class ProductController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id){
-        Product product=productService.getProductById(id);
+        ProductResponse product=productService.getProductById(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(product).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
@@ -44,7 +45,7 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<?> getList(@RequestParam(defaultValue = "1",required = false) int pageNo,
                                      @RequestParam(defaultValue = "8",required = false) int pageSize,
-                                     @RequestParam(required = false) String sortBy,
+                                     @RequestParam(required = false,defaultValue = "price:desc") String sortBy,
                                      @RequestParam(required = false) String category,
                                      @RequestParam(required = false) String... search){
         var result=productService.getList(pageNo,pageSize,sortBy,category,search);

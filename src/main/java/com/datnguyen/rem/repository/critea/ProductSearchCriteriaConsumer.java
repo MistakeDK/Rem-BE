@@ -19,13 +19,26 @@ public class ProductSearchCriteriaConsumer implements Consumer<SearchCriteria> {
     Predicate predicate;
     @Override
     public void accept(SearchCriteria param) {
-        if(param.getOperation().equals(">")){
-            predicate= builder.and(predicate,builder.
-                    greaterThanOrEqualTo(root.get(param.getKey()),param.getValue().toString()));
-        } else if (param.getOperation().equals("<")) {
+//        if(param.getOperation().equals(">")){
+//            predicate= builder.and(predicate,builder.
+//                    greaterThanOrEqualTo(root.get(param.getKey()),param.getValue().toString()));
+//        } else if (param.getOperation().equals("<")) {
+//            predicate= builder.and(predicate,builder.
+//                    lessThanOrEqualTo(root.get(param.getKey()),param.getValue().toString()));
+//        }else {
+//            if(root.get(param.getKey()).getJavaType()==String.class){
+//                predicate= builder.and(predicate,builder.
+//                        like(root.get(param.getKey()),"%"+param.getValue().toString()+"%"));
+//            }else {
+//                predicate= builder.and(predicate,builder.
+//                        equal(root.get(param.getKey()),param.getValue().toString()));
+//            }
+//        }
+        if(root.get(param.getKey()).getJavaType()== Double.class){
             predicate= builder.and(predicate,builder.
                     lessThanOrEqualTo(root.get(param.getKey()),param.getValue().toString()));
-        }else {
+        }
+        else {
             if(root.get(param.getKey()).getJavaType()==String.class){
                 predicate= builder.and(predicate,builder.
                         like(root.get(param.getKey()),"%"+param.getValue().toString()+"%"));

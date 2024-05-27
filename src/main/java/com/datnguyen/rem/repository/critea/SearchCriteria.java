@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class SearchCriteria {
     String key; // name field
-    String operation; // =,<,>
+    String operation; // =
     Object value;
 }

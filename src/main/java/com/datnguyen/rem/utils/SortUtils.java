@@ -50,7 +50,7 @@ public class SortUtils {
     }
     public static SearchCriteria createSearchForListCriteria(String search){
         // price:value
-        Pattern pattern=Pattern.compile("(\\w+?)(:|>|<)(.*)");
+        Pattern pattern=Pattern.compile("(\\w+?)(:|>|<|=)(.*)");
         Matcher matcher=pattern.matcher(search);
         if(matcher.find()){
             return new SearchCriteria(matcher.group(1), matcher.group(2),matcher.group(3));
