@@ -65,6 +65,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{idUser}")
     ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable("idUser") String id){
+        var context=SecurityContextHolder.getContext();
         userService.deleteUser(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("delete success").build();
         return ResponseEntity.ok().body(apiResponse);

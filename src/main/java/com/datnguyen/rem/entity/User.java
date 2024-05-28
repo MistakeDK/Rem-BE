@@ -1,5 +1,6 @@
 package com.datnguyen.rem.entity;
 
+import com.datnguyen.rem.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,10 +29,13 @@ public class User {
     String email;
     String phone;
     LocalDate dob;
-    Boolean isActive;
+    @Builder.Default
+    Boolean isActive=false;
     @Builder.Default
     Boolean isBan=false;
-    String role;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    Role role=Role.USER;
     String verificationCode;
     @CreationTimestamp
     Date timeStamp;

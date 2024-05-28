@@ -13,12 +13,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -30,28 +36,26 @@ public class SecurityConfig {
             HttpMethod.GET,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT
     };
     private final String[] PUBLIC_ENDPOINTS={
-            "/users/**","/auth/logIn",
-            "/auth/introspect",
-            "/auth/cookie",
-            "/auth/logout",
-            "/auth/refresh",
+            "/users/**","/auth/**",
             "/products/**",
-            "/category/**"
+            "/category/**",
 
     };
-    private final String[] PRIVATE_ENDPOINTS={
-            "/users"
-    };
+    @Value("${dev.site}")
+    private String url;
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
     @Value("${jwt.private_key}")
-    private String secretkey;
+    private String secretKey;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests
                 (request -> request.requestMatchers(PUBLIC_ENDPOINTS).
                 permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated()).oauth2Login(oauth2 -> oauth2
+                .loginPage("/oauth2/authorization/github")
+                .defaultSuccessUrl("/auth/LogInWithGithub")
+                .failureUrl("/loginFailure"));
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
                         jwtConfigurer.decoder(customJwtDecoder)
@@ -60,12 +64,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
-//    @Bean
-//    JwtDecoder jwtDecoder(){
-//        SecretKeySpec secretKeySpec=new SecretKeySpec(secretkey.getBytes(),"HS512");
-//        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-//                .macAlgorithm(MacAlgorithm.HS512).build();
-//    };
+
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();
@@ -74,6 +73,7 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return  jwtAuthenticationConverter;
     }
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return  new BCryptPasswordEncoder(10);

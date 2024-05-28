@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 
@@ -45,12 +46,25 @@ public class UserService {
         String randomCode= UUID.randomUUID().toString();
         user.setVerificationCode(randomCode);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER.name());
+        user.setRole(Role.USER);
         user.setIsActive(false);
         user.setIsBan(false);
         userRepository.save(user);
         mailService.sendVerificationEmail(user);
         return userMapper.toUserResponse(user);
+    }
+    public void createUserWithGithub(OAuth2User principal){
+        var user=userRepository.findByusername(principal.getName());
+        if(user.isPresent()){
+            return;
+        }
+        User newUser=User.builder()
+                .username(principal.getName())
+                .role(Role.USER)
+                .email(principal.getAttribute("login"))
+                .isActive(true)
+                .build();
+        userRepository.save(newUser);
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserResponse> getList(){

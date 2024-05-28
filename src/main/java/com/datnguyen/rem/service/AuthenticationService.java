@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -115,7 +116,8 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         PasswordEncoder passwordEncoder=new BCryptPasswordEncoder(10);
-        boolean authenticated= passwordEncoder.matches(request.getPassword(),user.getPassword());
+        boolean authenticated= user.getPassword()==null ||
+                passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -141,8 +143,8 @@ public class AuthenticationService {
 
     private String BuildScope(User user){
         StringJoiner stringJoiner=new StringJoiner("");
-        if(!user.getRole().isEmpty())
-           stringJoiner.add(user.getRole());
+        if(!user.getRole().name().isEmpty())
+           stringJoiner.add(user.getRole().name());
         return stringJoiner.toString();
     }
     private SignedJWT veryfyToken(String token) throws JOSEException, ParseException {

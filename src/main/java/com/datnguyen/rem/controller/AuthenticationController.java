@@ -8,17 +8,19 @@ import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.AuthenticationResponse;
 import com.datnguyen.rem.dto.response.IntrospectResponse;
 import com.datnguyen.rem.service.AuthenticationService;
+import com.datnguyen.rem.service.UserService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.*;
+
 import java.text.ParseException;
 
 @RestController
@@ -27,15 +29,21 @@ import java.text.ParseException;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
-
+    UserService userService;
     @PostMapping("/logIn")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws JOSEException {
         var result = authenticationService.authentication(request);
         return ApiResponse.<AuthenticationResponse>builder().
                 result(result).build();
     }
-
-        @PostMapping("/logout")
+    @GetMapping("/LogInWithGithub")
+    ApiResponse<?> authenticateWithGithub(@AuthenticationPrincipal OAuth2User principal) throws JOSEException {
+        userService.createUserWithGithub(principal);
+        var request= AuthenticationRequest.builder().username(principal.getName()).build();
+        var result=authenticationService.authentication(request);
+        return ApiResponse.builder().result(result).build();
+    }
+    @PostMapping("/logout")
     ApiResponse<String> logout(@RequestBody LogoutRequest request)
             throws ParseException, JOSEException {
         authenticationService.logout(request);
