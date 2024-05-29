@@ -11,16 +11,20 @@ import com.datnguyen.rem.service.AuthenticationService;
 import com.datnguyen.rem.service.UserService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @RestController
@@ -28,6 +32,9 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AuthenticationController {
+    @Value("${dev.site}")
+    @NonFinal
+    String url;
     AuthenticationService authenticationService;
     UserService userService;
     @PostMapping("/logIn")
@@ -37,11 +44,12 @@ public class AuthenticationController {
                 result(result).build();
     }
     @GetMapping("/LogInWithGithub")
-    ApiResponse<?> authenticateWithGithub(@AuthenticationPrincipal OAuth2User principal) throws JOSEException {
+    void authenticateWithGithub(HttpServletRequest request,
+                                          HttpServletResponse response,
+                                          @AuthenticationPrincipal OAuth2User principal) throws JOSEException, IOException {
         userService.createUserWithGithub(principal);
-        var request= AuthenticationRequest.builder().username(principal.getName()).build();
-        var result=authenticationService.authentication(request);
-        return ApiResponse.builder().result(result).build();
+        var authenticationRequest= AuthenticationRequest.builder().username(principal.getName()).build();
+        response.sendRedirect(url+"/Authorization?name="+principal.getName());
     }
     @PostMapping("/logout")
     ApiResponse<String> logout(@RequestBody LogoutRequest request)

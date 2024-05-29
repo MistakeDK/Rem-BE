@@ -61,7 +61,7 @@ public class UserService {
         User newUser=User.builder()
                 .username(principal.getName())
                 .role(Role.USER)
-                .email(principal.getAttribute("login"))
+                .email(principal.getAttribute("email"))
                 .isActive(true)
                 .build();
         userRepository.save(newUser);
