@@ -54,7 +54,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
     public void createUserWithGithub(OAuth2User principal){
-        var user=userRepository.findByusername(principal.getName());
+        var user=userRepository.findByemail(principal.getAttribute("email"));
         if(user.isPresent()){
             return;
         }

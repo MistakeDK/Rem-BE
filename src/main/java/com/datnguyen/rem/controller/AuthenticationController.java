@@ -48,7 +48,6 @@ public class AuthenticationController {
                                           HttpServletResponse response,
                                           @AuthenticationPrincipal OAuth2User principal) throws JOSEException, IOException {
         userService.createUserWithGithub(principal);
-        var authenticationRequest= AuthenticationRequest.builder().username(principal.getName()).build();
         response.sendRedirect(url+"/Authorization?name="+principal.getName());
     }
     @PostMapping("/logout")

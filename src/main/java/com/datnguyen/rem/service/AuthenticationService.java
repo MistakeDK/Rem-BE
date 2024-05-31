@@ -25,15 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -102,6 +99,7 @@ public class AuthenticationService {
                 expirationTime(expiration).
                 claim("scope",BuildScope(user)).
                 jwtID(UUID.randomUUID().toString()).
+                claim("userId",user.getId()).
                 build();
         Payload payload=new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject=new JWSObject(header,payload);

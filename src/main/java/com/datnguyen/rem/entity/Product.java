@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;

@@ -18,7 +18,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -37,6 +37,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     Role role=Role.USER;
     String verificationCode;
-    @CreationTimestamp
-    Date timeStamp;
 }

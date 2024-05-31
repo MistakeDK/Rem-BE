@@ -48,7 +48,7 @@ public class SecurityConfig {
             "/users/**","/auth/**",
             "/products/**",
             "/category/**",
-
+            "/carts/**"
     };
     @Value("${dev.site}")
     private String url;
