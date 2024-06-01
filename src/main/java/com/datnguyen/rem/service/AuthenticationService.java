@@ -23,6 +23,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class AuthenticationService {
     public void logout(LogoutRequest request)
             throws ParseException, JOSEException {
         try{
-            var singedToken=veryfyToken(request.getToken());
+            var singedToken= verifyToken(request.getToken());
             String jit=singedToken.getJWTClaimsSet().getJWTID();
             Date expiryTime=singedToken.getJWTClaimsSet().getExpirationTime();
             InvalidToken invalidToken=InvalidToken.builder()
@@ -68,7 +70,7 @@ public class AuthenticationService {
     }
     public AuthenticationResponse refreshToken(RefreshRequest request)
             throws ParseException, JOSEException {
-        var singedToken=veryfyToken(request.getRefreshToken());
+        var singedToken= verifyToken(request.getRefreshToken());
         String jit=singedToken.getJWTClaimsSet().getJWTID();
         Date expiryTime=singedToken.getJWTClaimsSet().getExpirationTime();
         InvalidToken invalidToken=InvalidToken.builder()
@@ -85,13 +87,10 @@ public class AuthenticationService {
                 .token(token)
                 .build();
     }
-
-
     private String generateToken(User user,boolean isUseForRefreshToken) throws JOSEException {
         Date expiration=isUseForRefreshToken ?
                 new Date(Instant.now().plus(REFRESHABLE_DURATION,ChronoUnit.SECONDS).toEpochMilli())
                 :new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
-
         JWSHeader header=new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet=new JWTClaimsSet.Builder().
                 subject(user.getUsername()).
@@ -123,6 +122,7 @@ public class AuthenticationService {
         var refreshToken=generateToken(user,true);
         return AuthenticationResponse.builder()
                 .token(token)
+                .id(user.getId())
                 .RefreshToken(refreshToken)
                 .authenticated(true).build();
     }
@@ -130,7 +130,7 @@ public class AuthenticationService {
         var token =request.getToken();
         boolean isValid=true;
         try{
-        veryfyToken(token);
+        verifyToken(token);
         }catch (AppException e){
             isValid=false;
         }
@@ -145,7 +145,7 @@ public class AuthenticationService {
            stringJoiner.add(user.getRole().name());
         return stringJoiner.toString();
     }
-    private SignedJWT veryfyToken(String token) throws JOSEException, ParseException {
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier=new MACVerifier(PRIVATE_KEY.getBytes(StandardCharsets.UTF_8));
         SignedJWT signedJWT=SignedJWT.parse(token);
         Date expiryTime=signedJWT.getJWTClaimsSet().getExpirationTime();

@@ -41,7 +41,7 @@ public class CartDetailService {
         switch (actionCartQuantity){
             case  INCREASE-> {
                 if(cartDetail!=null){
-                    cartDetail.setQuantity(cartDetail.getQuantity()+1);
+                    cartDetail.setQuantity(cartDetail.getQuantity()+request.getQuantity());
                 }else {
                     CartDetail_ID cartDetailId=CartDetail_ID.builder()
                             .product(productRepository.findById(request.getProductId()).
@@ -51,7 +51,7 @@ public class CartDetailService {
                             .build();
                     CartDetail newCartDetail=CartDetail.builder()
                             .cartDetailId(cartDetailId)
-                            .quantity(1)
+                            .quantity(request.getQuantity())
                             .build();
                     cartDetailRepository.save(newCartDetail);
                 }

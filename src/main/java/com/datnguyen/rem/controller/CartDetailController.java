@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.datnguyen.rem.dto.request.CartDetailRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.service.CartDetailService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,11 +24,10 @@ public class CartDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @PostMapping("/changeQuantity/{idUser}")
-    ResponseEntity<ApiResponse<?>>  ChangeQuantity(@RequestBody CartDetailRequest request,
+    ResponseEntity<ApiResponse<?>>  ChangeQuantity(@Valid @RequestBody CartDetailRequest request,
                                                    @PathVariable String idUser){
         cartDetailService.changeQuantity(request,idUser);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Quantity Success").build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
-
 }

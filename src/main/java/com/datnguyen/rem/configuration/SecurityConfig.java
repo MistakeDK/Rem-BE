@@ -39,7 +39,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final HttpMethod[] PUBLIC_METHOD={
             HttpMethod.GET,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT
@@ -47,8 +47,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS={
             "/users/**","/auth/**",
             "/products/**",
-            "/category/**",
-            "/carts/**"
+            "/category/**"
     };
     @Value("${dev.site}")
     private String url;
