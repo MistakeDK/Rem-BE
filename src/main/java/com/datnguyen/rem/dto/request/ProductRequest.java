@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 @Data
 @Builder
@@ -19,7 +20,10 @@ public class ProductRequest {
     String name;
     @Min(value = 1,message = "PRICE_INVALID")
     Double price;
+    @NotEmpty(message = "IMG_IS_EMPTY")
     String img;
+    @NotEmpty(message = "DESCRIPTION_IS_EMPTY")
     String description;
+    @NotEmpty()
     String categoryId;
 }
