@@ -47,7 +47,8 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS={
             "/users/**","/auth/**",
             "/products/**",
-            "/category/**"
+            "/category/**",
+            "/promotions/**"
     };
     @Value("${dev.site}")
     private String url;
