@@ -153,7 +153,6 @@ public class SearchRepository {
             query.select(criteriaBuilder.count(root));
             query.where(predicate);
         }
-
         return entityManager.createQuery(query).getSingleResult();
     }
 }

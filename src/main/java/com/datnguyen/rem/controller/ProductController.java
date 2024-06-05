@@ -8,7 +8,6 @@ import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.service.CloundinaryService;
 import com.datnguyen.rem.service.ProductService;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

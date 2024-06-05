@@ -20,7 +20,7 @@ public class Product extends AbstractEntity {
     Double price;
     String img;
     @Builder.Default
-    boolean isActive=true;
+    Boolean isActive=true;
     String description;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")

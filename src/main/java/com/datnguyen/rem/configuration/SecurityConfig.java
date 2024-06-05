@@ -28,8 +28,10 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -54,10 +56,13 @@ public class SecurityConfig {
     private String url;
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
+    @Autowired
+    private  JwtRefreshFilter jwtRefreshFilter;
     @Value("${jwt.private_key}")
     private String secretKey;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests
                 (request -> request.requestMatchers(PUBLIC_ENDPOINTS).
                 permitAll()
@@ -72,7 +77,7 @@ public class SecurityConfig {
                         jwtConfigurer.decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())).
                 authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.addFilterBefore(jwtRefreshFilter, AuthorizationFilter.class);
         return httpSecurity.build();
     }
 
@@ -110,7 +115,6 @@ public class SecurityConfig {
             }
             Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
             attributes.put("email", email);
-
             return new DefaultOAuth2User(oAuth2User.getAuthorities(), attributes, "id");
         };
     }

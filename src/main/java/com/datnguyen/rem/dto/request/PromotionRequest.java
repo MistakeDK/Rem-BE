@@ -15,7 +15,7 @@ public class PromotionRequest {
     @NotEmpty(message = "PROMOTION_CODE_IS_EMPTY")
     String promotionCode;
     @NotEmpty(message = "PROMOTION_TYPE_IS_EMPTY")
-    PromotionType type;
-    @NotEmpty(message = "PROMOTION_TYPE_IS_EMPTY")
+    String type;
     Double value;
+
 }

@@ -12,4 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class PromotionResponse {
     PromotionType type;
     Double value;
+    Boolean active;
 }

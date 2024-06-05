@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class PromotionController {
     PromotionService service;
     @PostMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<?> addPromotion(@Valid @RequestBody PromotionRequest promotionRequest){
         service.addPromotion(promotionRequest);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Add Success").build();

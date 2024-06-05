@@ -64,8 +64,6 @@ public class AuthenticationController {
                 .result(result)
                 .build();
     }
-
-
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
@@ -78,7 +76,7 @@ public class AuthenticationController {
                                                                      HttpServletResponse response)
             throws JOSEException {
         var result = authenticationService.authentication(request);
-        Cookie cookie = new Cookie("token", result.getToken());
+        Cookie cookie = new Cookie("JWT", result.getToken());
         cookie.setHttpOnly(true); // Để tránh truy cập từ JavaScript
         cookie.setSecure(true);   // Để sử dụng qua HTTPS
         cookie.setPath("/");      // Để cookie có sẵn cho toàn bộ ứng dụng
@@ -88,5 +86,4 @@ public class AuthenticationController {
                 .result(result).build();
         return ResponseEntity.ok(apiResponse);
     }
-
 }

@@ -1,7 +1,8 @@
 package com.datnguyen.rem.configuration;
-
+import com.datnguyen.rem.entity.Category;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.enums.Role;
+import com.datnguyen.rem.repository.CategoryRepository;
 import com.datnguyen.rem.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository){
+    ApplicationRunner applicationRunner(UserRepository userRepository, CategoryRepository categoryRepository){
         return args -> {
             if(userRepository.findByusername("admin").isEmpty()){
                 User user= User.builder()
@@ -30,6 +31,12 @@ public class ApplicationInitConfig {
                         .build();
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin,please change password");
+            }
+            if(!(categoryRepository.existsByName("Naruto")&& categoryRepository.existsByName("One Piece"))){
+                Category categoryFirst=Category.builder().name("Naruto").build();
+                categoryRepository.save(categoryFirst);
+                Category categorySecond= Category.builder().name("One Piece").build();
+                categoryRepository.save(categorySecond);
             }
         };
     }

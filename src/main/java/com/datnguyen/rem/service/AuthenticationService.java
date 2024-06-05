@@ -23,8 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,8 +50,8 @@ public class AuthenticationService {
     @Value("${jwt.valid-duration}")
     protected long VALID_DURATION;
     @NonFinal
-    @Value("${jwt.refreshable-duration}")
-    protected long REFRESHABLE_DURATION;
+    long REFRESH_THRESHOLD = 30 * 60 * 1000; // 30 minutes in milliseconds
+
     public void logout(LogoutRequest request)
             throws ParseException, JOSEException {
         try{
@@ -71,26 +70,17 @@ public class AuthenticationService {
     public AuthenticationResponse refreshToken(RefreshRequest request)
             throws ParseException, JOSEException {
         var singedToken= verifyToken(request.getRefreshToken());
-        String jit=singedToken.getJWTClaimsSet().getJWTID();
-        Date expiryTime=singedToken.getJWTClaimsSet().getExpirationTime();
-        InvalidToken invalidToken=InvalidToken.builder()
-                .id(jit)
-                .expireTime(expiryTime)
-                .build();
-        invalidTokenRepository.save(invalidToken);
         var username=singedToken.getJWTClaimsSet().getSubject();
         var user=userRepository.findByusername(username).
                 orElseThrow(()->new AppException(ErrorCode.UNAUTHENTICATED));
-        var token=generateToken(user,false);
+        var token=generateToken(user);
         return  AuthenticationResponse.builder()
                 .authenticated(true)
                 .token(token)
                 .build();
     }
-    private String generateToken(User user,boolean isUseForRefreshToken) throws JOSEException {
-        Date expiration=isUseForRefreshToken ?
-                new Date(Instant.now().plus(REFRESHABLE_DURATION,ChronoUnit.SECONDS).toEpochMilli())
-                :new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
+    private String generateToken(User user) throws JOSEException {
+        Date expiration=new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
         JWSHeader header=new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet=new JWTClaimsSet.Builder().
                 subject(user.getUsername()).
@@ -118,12 +108,10 @@ public class AuthenticationService {
         if(!authenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token=generateToken(user,false);
-        var refreshToken=generateToken(user,true);
+        var token=generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .id(user.getId())
-                .RefreshToken(refreshToken)
                 .authenticated(true).build();
     }
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
@@ -150,6 +138,11 @@ public class AuthenticationService {
         SignedJWT signedJWT=SignedJWT.parse(token);
         Date expiryTime=signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified= signedJWT.verify(verifier);
+        var user=userRepository.findByusername(signedJWT.getJWTClaimsSet().getSubject()).
+                orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
+        if(user.getIsBan()){
+            throw new AppException(ErrorCode.USER_IS_BAN);
+        }
         if(!(verified && expiryTime.after(new Date()))){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -157,5 +150,21 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         return signedJWT;
+    }
+    public boolean needsRefresh(SignedJWT signedJWT) throws ParseException {
+        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        long timeToExpiry = expirationTime.getTime() - System.currentTimeMillis();
+        return timeToExpiry < REFRESH_THRESHOLD;
+    }
+
+    public String refreshJwt(SignedJWT signedJWT) throws JOSEException, ParseException {
+        String userId = signedJWT.getJWTClaimsSet().getStringClaim("userId");
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+
+        User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
+        if (user == null || !user.getUsername().equals(username)) {
+            throw new RuntimeException("Invalid user information");
+        }
+        return generateToken(user);
     }
 }

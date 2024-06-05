@@ -18,7 +18,7 @@ public class PromotionService {
     PromotionRepository repository;
     PromotionMapper mapper;
     public void addPromotion(PromotionRequest request){
-        if(repository.findById(request.getPromotionCode()).isEmpty()){
+        if(repository.findById(request.getPromotionCode()).isPresent()){
             throw new AppException(ErrorCode.PROMOTION_EXIST);
         }
         var promotion=mapper.toPromotion(request);

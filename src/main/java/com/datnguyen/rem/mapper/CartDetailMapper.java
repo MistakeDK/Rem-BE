@@ -14,6 +14,6 @@ public interface CartDetailMapper {
     @Mapping(source = "cartDetailId.product.price", target = "price")
     @Mapping(source = "cartDetailId.product.img", target = "img")
     @Mapping(source = "quantity", target = "quantity")
-    @Mapping(source ="cartDetailId.product.active" ,target ="active" )
+    @Mapping(source ="cartDetailId.product.isActive" ,target ="active" )
     CartDetailResponse toCartDetailResponse(CartDetail cartDetail);
 }

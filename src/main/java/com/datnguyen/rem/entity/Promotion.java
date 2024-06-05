@@ -22,5 +22,5 @@ public class Promotion {
     PromotionType type;
     Double value;
     @Builder.Default
-    Boolean active=false;
+    Boolean active=true;
 }

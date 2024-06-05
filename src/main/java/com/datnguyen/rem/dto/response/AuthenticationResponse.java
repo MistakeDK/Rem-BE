@@ -14,5 +14,4 @@ public class AuthenticationResponse {
     String id;
     boolean authenticated;
     String token;
-    String RefreshToken;
 }

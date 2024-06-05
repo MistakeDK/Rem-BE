@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     UN_AUTHORIZATION("don't have permission",HttpStatus.FORBIDDEN),
     UNAUTHENTICATED( "not authenticated",HttpStatus.UNAUTHORIZED),
+    USER_IS_BAN("user is ban",HttpStatus.BAD_REQUEST),
     VERIFY_CODE_NOT_EXIST("code is not exist",HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST( "User not found",HttpStatus.NOT_FOUND),
     PASSWORD_INVALID( "password must be at least 8 characters",HttpStatus.BAD_REQUEST),

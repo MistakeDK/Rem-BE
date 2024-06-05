@@ -3,6 +3,7 @@ package com.datnguyen.rem.configuration;
 import com.datnguyen.rem.dto.request.IntrospectRequest;
 import com.datnguyen.rem.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.annotations.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ public class CustomJwtDecoder implements JwtDecoder {
        }
        if(Objects.isNull(nimbusJwtDecoder)){
            SecretKeySpec secretKeySpec=new SecretKeySpec(private_key.getBytes(),"HS512");
-           nimbusJwtDecoder =nimbusJwtDecoder.withSecretKey(secretKeySpec)
+           nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
                    .macAlgorithm(MacAlgorithm.HS512)
                    .build(); //set nimbusJwtDecoder to decode token
        }
