@@ -1,10 +1,8 @@
-package com.datnguyen.rem.configuration;
+package com.datnguyen.rem.configuration.security;
 
 import com.datnguyen.rem.dto.request.IntrospectRequest;
 import com.datnguyen.rem.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
-import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.annotations.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;

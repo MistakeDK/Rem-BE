@@ -1,4 +1,4 @@
-package com.datnguyen.rem.configuration;
+package com.datnguyen.rem.configuration.security;
 
 import com.datnguyen.rem.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
@@ -36,7 +36,6 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                 throw new ServletException("Invalid JWT token", e);
             }
         }
-
         filterChain.doFilter(request, response);
     }
     private String getJwtFromRequest(HttpServletRequest request) {

@@ -56,7 +56,7 @@ public class UserService {
     public void createUserWithGithub(OAuth2User principal){
         var user=userRepository.findByemail(principal.getAttribute("email"));
         if(user.isPresent()){
-            return;
+            return ;
         }
         User newUser=User.builder()
                 .username(principal.getName())

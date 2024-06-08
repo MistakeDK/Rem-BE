@@ -1,4 +1,4 @@
-package com.datnguyen.rem.configuration;
+package com.datnguyen.rem.configuration.security;
 
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.exception.ErrorCode;

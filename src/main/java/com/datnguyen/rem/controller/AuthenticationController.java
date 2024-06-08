@@ -50,6 +50,11 @@ public class AuthenticationController {
         userService.createUserWithGithub(principal);
         response.sendRedirect(url+"/Authorization?name="+principal.getName());
     }
+    @GetMapping("/loginFailure")
+    void authenticateFailed(HttpServletRequest request,
+                            HttpServletResponse response) throws IOException {
+        response.sendRedirect(url);
+    }
     @PostMapping("/logout")
     ApiResponse<String> logout(@RequestBody LogoutRequest request)
             throws ParseException, JOSEException {
