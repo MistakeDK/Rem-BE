@@ -1,6 +1,7 @@
 package com.datnguyen.rem.entity;
 
 import com.datnguyen.rem.enums.OrderStatus;
+import com.datnguyen.rem.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +22,10 @@ public class Order extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Enumerated(EnumType.STRING)
-            @Builder.Default
+    @Builder.Default
     OrderStatus status=OrderStatus.RECEIVED;
+    @Enumerated(EnumType.STRING)
+    PaymentType paymentType;
     String address;
     String name;
     String phone;
@@ -32,7 +35,7 @@ public class Order extends AbstractEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<OrderDetail> orderDetails;
     @ManyToOne
-    @JoinColumn(name = "promotion_code")
+    @JoinColumn(name = "promotion_code",nullable = true)
     Promotion promotion;
     public Date getTimeCreate(){
         return super.getTimeCreate();

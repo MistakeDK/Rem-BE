@@ -12,10 +12,12 @@ import com.datnguyen.rem.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(makeFinal = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     OrderRepository orderRepository;
     OrderDetailRepository orderDetailRepository;
@@ -35,6 +38,10 @@ public class OrderService {
         var listOrder=orderMapper.toListOrderDetail(listCart);
         listOrder.forEach(orderDetail -> orderDetail.setOrder(order));
         order.setOrderDetails(listOrder);
+        if(order.getPromotion().getPromotionCode()==null){
+            order.setPromotion(null);
+        }
+        cartDetailRepository.deleteByCartDetailId_User_Id(request.getUserId());
         orderRepository.save(order);
     }
     public PageResponse<?> getAllOrderByIdUser(String id,int pageNo,int pageSize){

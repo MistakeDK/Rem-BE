@@ -6,18 +6,24 @@ import com.datnguyen.rem.entity.CartDetail;
 import com.datnguyen.rem.entity.Order;
 
 import com.datnguyen.rem.entity.OrderDetail;
+import com.datnguyen.rem.entity.Promotion;
+import com.datnguyen.rem.repository.PromotionRepository;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.Set;
 
 
-@Mapper(componentModel = "spring",uses = OrderDetailMapper.class)
+@Mapper(componentModel = "spring",uses = {OrderDetailMapper.class, PromotionRepository.class})
 public interface OrderMapper {
     @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "promotionCode", target = "promotion.promotionCode")
+    @Mapping(source = "promotionCode",target = "promotion.promotionCode")
     Order toOrder(OrderRequest request);
+
+
 
     @Mapping(source = "cartDetailId.product", target = "product")
     @Mapping(source = "cartDetailId.product.price", target = "price")
@@ -30,4 +36,6 @@ public interface OrderMapper {
     @Mapping(source = "orderDetails",target = "orderDetails")
     @Mapping(source = "timeCreate",target = "time_Create")
     OrderResponse toOrderResponse(Order order);
+
+
 }
