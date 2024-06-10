@@ -17,10 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @FieldDefaults(makeFinal = true)
@@ -32,8 +30,13 @@ public class OrderService {
     CartDetailRepository cartDetailRepository;
     OrderMapper orderMapper;
     @Transactional
-    public void createOrder(OrderRequest request){
+    public void createOrder(OrderRequest request,String idOrder){
         Order order=orderMapper.toOrder(request);
+        if(idOrder!=null){
+            order.setId(idOrder);
+        }else {
+            order.setId(UUID.randomUUID().toString());
+        }
         var listCart=cartDetailRepository.findByCartDetailIdUserId(request.getUserId());
         var listOrder=orderMapper.toListOrderDetail(listCart);
         listOrder.forEach(orderDetail -> orderDetail.setOrder(order));
@@ -43,6 +46,11 @@ public class OrderService {
         }
         cartDetailRepository.deleteByCartDetailId_User_Id(request.getUserId());
         orderRepository.save(order);
+    }
+    @Transactional
+    public void paidOrderById(String id){
+        Order order=orderRepository.findById(id).orElseThrow();
+        order.setIsPaid(true);
     }
     public PageResponse<?> getAllOrderByIdUser(String id,int pageNo,int pageSize){
         if(pageNo>0){

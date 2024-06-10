@@ -19,7 +19,6 @@ import java.util.Set;
 @Table(name = "`order`")
 public class Order extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -37,6 +36,8 @@ public class Order extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "promotion_code",nullable = true)
     Promotion promotion;
+    @Builder.Default
+    Boolean isPaid=false;
     public Date getTimeCreate(){
         return super.getTimeCreate();
     }
