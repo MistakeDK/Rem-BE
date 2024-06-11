@@ -35,6 +35,8 @@ public interface OrderMapper {
     @Mapping(source = "promotion.type",target = "promotionType")
     @Mapping(source = "orderDetails",target = "orderDetails")
     @Mapping(source = "timeCreate",target = "time_Create")
+    @Mapping(source = "paymentType",target = "paymentType")
+    @Mapping(source = "id",target = "id")
     OrderResponse toOrderResponse(Order order);
 
 

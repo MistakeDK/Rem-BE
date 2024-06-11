@@ -30,13 +30,8 @@ public class OrderService {
     CartDetailRepository cartDetailRepository;
     OrderMapper orderMapper;
     @Transactional
-    public void createOrder(OrderRequest request,String idOrder){
+    public String createOrder(OrderRequest request){
         Order order=orderMapper.toOrder(request);
-        if(idOrder!=null){
-            order.setId(idOrder);
-        }else {
-            order.setId(UUID.randomUUID().toString());
-        }
         var listCart=cartDetailRepository.findByCartDetailIdUserId(request.getUserId());
         var listOrder=orderMapper.toListOrderDetail(listCart);
         listOrder.forEach(orderDetail -> orderDetail.setOrder(order));
@@ -46,6 +41,7 @@ public class OrderService {
         }
         cartDetailRepository.deleteByCartDetailId_User_Id(request.getUserId());
         orderRepository.save(order);
+        return  order.getId();
     }
     @Transactional
     public void paidOrderById(String id){

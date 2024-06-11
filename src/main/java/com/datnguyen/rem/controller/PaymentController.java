@@ -28,11 +28,10 @@ public class PaymentController {
     @NonFinal
     @Value("${VNPay.failUrl}")
     String failUrl;
-    @PostMapping("/vn-pay")
+    @GetMapping("/vn-pay/{orderId}")
     ResponseEntity<?> CreateUrlPaymentVNPay(HttpServletRequest request,
-                                            @Valid @RequestBody OrderRequest orderRequest){
-
-        var result=paymentService.createVNPayPayment(request,orderRequest);
+                                            @PathVariable String orderId){
+        var result=paymentService.createVNPayPayment(request,orderId);
         return ResponseEntity.ok().body(result);
     }
     @GetMapping("/vn-pay-callback")

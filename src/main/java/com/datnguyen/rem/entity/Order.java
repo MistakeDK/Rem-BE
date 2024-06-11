@@ -19,6 +19,7 @@ import java.util.Set;
 @Table(name = "`order`")
 public class Order extends AbstractEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Enumerated(EnumType.STRING)
     @Builder.Default

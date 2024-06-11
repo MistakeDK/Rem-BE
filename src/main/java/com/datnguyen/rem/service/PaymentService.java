@@ -14,11 +14,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentService {
     private final VNPayConfig vnPayConfig;
-    private final OrderService orderService;
-    public ApiResponse<?> createVNPayPayment(HttpServletRequest request, OrderRequest orderRequest){
+    public ApiResponse<?> createVNPayPayment(HttpServletRequest request,String orderId){
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
         String bankCode = request.getParameter("bankCode");
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(orderId);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
@@ -29,7 +28,7 @@ public class PaymentService {
         String vnpSecureHash = VNPayUtils.hmacSHA512(vnPayConfig.getSecretkey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnPayConfig.getVnpPayUrl() + "?" + queryUrl;
-        orderService.createOrder(orderRequest,vnpParamsMap.get("vnp_TxnRef"));
+
         return ApiResponse.builder()
                 .result(paymentUrl)
                 .build();

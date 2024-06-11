@@ -11,5 +11,6 @@ public interface OrderDetailMapper {
     @Mapping(source = "product.img",target = "img")
     @Mapping(source = "product.name",target = "productName")
     @Mapping(source = "quantity",target = "quantity")
+    @Mapping(source = "price",target = "price")
     OrderDetailResponse toOrderDetailResponse(OrderDetail orderDetail);
 }

@@ -19,9 +19,9 @@ public class OrderController {
     OrderService service;
     @PostMapping("")
     ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequest request){
-        service.createOrder(request,null);
-        ApiResponse<?> apiResponse=ApiResponse.builder().message("Create Order Success").build();
-        return  ResponseEntity.ok().body(apiResponse);
+        var result= service.createOrder(request);
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(result).build();
+        return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping("/{idUser}")
     ResponseEntity<ApiResponse<?>> getOrderByIdUser(@PathVariable("idUser") String id,

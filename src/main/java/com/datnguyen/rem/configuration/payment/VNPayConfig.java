@@ -29,13 +29,13 @@ public class VNPayConfig {
     String vnpCommand;
     @Value("${VNPay.orderType}")
     String orderType;
-    public Map<String,String> getVNPayConfig(){
+    public Map<String,String> getVNPayConfig(String id){
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnpVersion);
         vnpParamsMap.put("vnp_Command", this.vnpCommand);
         vnpParamsMap.put("vnp_TmnCode", this.vnpTmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
-        vnpParamsMap.put("vnp_TxnRef", UUID.randomUUID().toString());
+        vnpParamsMap.put("vnp_TxnRef", id);
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VNPayUtils.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
