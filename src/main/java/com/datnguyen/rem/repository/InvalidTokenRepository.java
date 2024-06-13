@@ -1,9 +1,20 @@
 package com.datnguyen.rem.repository;
 
-import com.datnguyen.rem.entity.InvalidToken;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.concurrent.TimeUnit;
+
 @Repository
-public interface InvalidTokenRepository extends JpaRepository<InvalidToken,String> {
+public class InvalidTokenRepository{
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
+    public void saveInvalidToken(String jit,Long ttl){
+        redisTemplate.opsForValue().set(jit,"invalid",ttl, TimeUnit.SECONDS);
+    }
+    public boolean isTokenInvalid(String jit){
+        return Boolean.TRUE.equals(redisTemplate.hasKey(jit));
+    }
 }

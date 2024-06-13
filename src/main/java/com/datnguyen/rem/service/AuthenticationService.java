@@ -6,7 +6,6 @@ import com.datnguyen.rem.dto.request.LogoutRequest;
 import com.datnguyen.rem.dto.request.RefreshRequest;
 import com.datnguyen.rem.dto.response.AuthenticationResponse;
 import com.datnguyen.rem.dto.response.IntrospectResponse;
-import com.datnguyen.rem.entity.InvalidToken;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -58,11 +58,8 @@ public class AuthenticationService {
             var singedToken= verifyToken(request.getToken());
             String jit=singedToken.getJWTClaimsSet().getJWTID();
             Date expiryTime=singedToken.getJWTClaimsSet().getExpirationTime();
-            InvalidToken invalidToken=InvalidToken.builder()
-                    .id(jit)
-                    .expireTime(expiryTime)
-                    .build();
-            invalidTokenRepository.save(invalidToken);
+            Duration duration=Duration.between(Instant.now(),expiryTime.toInstant());
+            invalidTokenRepository.saveInvalidToken(jit,duration.getSeconds());
         }catch (AppException e){
             log.info("Token already expire");
         }
@@ -146,7 +143,7 @@ public class AuthenticationService {
         if(!(verified && expiryTime.after(new Date()))){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        if(invalidTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())){
+        if(invalidTokenRepository.isTokenInvalid(signedJWT.getJWTClaimsSet().getJWTID())){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         return signedJWT;

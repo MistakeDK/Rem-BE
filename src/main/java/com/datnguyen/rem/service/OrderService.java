@@ -56,7 +56,7 @@ public class OrderService {
         Pageable pageable= PageRequest.of(pageNo,pageSize,Sort.by(sort));
         var listOrder= orderRepository.findByUser_Id(id,pageable);
         return PageResponse.builder()
-                .pageNo(pageNo==0?pageNo+1:pageNo)
+                .pageNo(pageNo+1)
                 .pageSize(pageSize)
                 .totalItem(listOrder.getTotalElements())
                 .items(listOrder.stream().map(orderMapper::toOrderResponse))
