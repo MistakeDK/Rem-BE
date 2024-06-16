@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter
 public abstract class AbstractEntity {
     @CreationTimestamp
+    @Getter
     Date timeCreate;
     @UpdateTimestamp
     Date timeUpdate;

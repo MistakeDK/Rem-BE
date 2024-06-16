@@ -1,5 +1,6 @@
 package com.datnguyen.rem.configuration.security;
 
+import com.datnguyen.rem.dto.request.LogoutRequest;
 import com.datnguyen.rem.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
@@ -31,6 +32,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                 if (authenticationService.needsRefresh(signedJWT)) {
                     String newToken = authenticationService.refreshJwt(signedJWT);
                     response.setHeader("Authorization", "Bearer " + newToken);
+                    authenticationService.logout(LogoutRequest.builder().token(token).build());
                 }
             } catch (ParseException | JOSEException e) {
                 throw new ServletException("Invalid JWT token", e);

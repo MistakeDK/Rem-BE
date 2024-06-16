@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.cloudinary.Api;
 import com.datnguyen.rem.dto.request.ProductRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
+import com.datnguyen.rem.dto.response.ProductDetailResponse;
 import com.datnguyen.rem.dto.response.ProductResponse;
 import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.service.CloundinaryService;
@@ -36,7 +37,7 @@ public class ProductController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id){
-        ProductResponse product=productService.getProductById(id);
+        ProductDetailResponse product=productService.getProductById(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(product).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }

@@ -14,4 +14,6 @@ public class OrderDetailResponse {
     Double price;
     Integer quantity;
     String img;
+    Boolean isReview;
+
 }

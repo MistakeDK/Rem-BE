@@ -1,4 +1,4 @@
-package com.datnguyen.rem.repository;
+package com.datnguyen.rem.repository.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,6 +13,7 @@ public class InvalidTokenRepository{
 
     public void saveInvalidToken(String jit,Long ttl){
         redisTemplate.opsForValue().set(jit,"invalid",ttl, TimeUnit.SECONDS);
+        redisTemplate.opsForList();
     }
     public boolean isTokenInvalid(String jit){
         return Boolean.TRUE.equals(redisTemplate.hasKey(jit));

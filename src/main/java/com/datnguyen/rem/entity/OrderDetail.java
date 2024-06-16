@@ -23,4 +23,6 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "order_id")
     Order order;
+    @Builder.Default
+    Boolean isReview=false;
 }

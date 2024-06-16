@@ -9,7 +9,7 @@ import com.datnguyen.rem.dto.response.IntrospectResponse;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
-import com.datnguyen.rem.repository.InvalidTokenRepository;
+import com.datnguyen.rem.repository.redis.InvalidTokenRepository;
 import com.datnguyen.rem.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;

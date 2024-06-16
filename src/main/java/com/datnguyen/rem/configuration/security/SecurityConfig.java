@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +31,8 @@ public class SecurityConfig {
             "/category/**",
             "/promotions/**",
             "/orders/**",
-            "/payment/**"
+            "/payment/**",
+            "/reviews/**"
     };
     @Value("${dev.site}")
     private String url;
@@ -39,13 +42,14 @@ public class SecurityConfig {
     private  JwtRefreshFilter jwtRefreshFilter;
     @Value("${jwt.private_key}")
     private String secretKey;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests
                 (request -> request.requestMatchers(PUBLIC_ENDPOINTS).
-                permitAll()
-                        .anyRequest().authenticated());
+                permitAll().anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
                         jwtConfigurer.decoder(customJwtDecoder)
@@ -54,6 +58,8 @@ public class SecurityConfig {
         httpSecurity.addFilterBefore(jwtRefreshFilter, AuthorizationFilter.class);
         return httpSecurity.build();
     }
+
+
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
