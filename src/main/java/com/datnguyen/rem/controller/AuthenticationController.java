@@ -7,8 +7,8 @@ import com.datnguyen.rem.dto.request.RefreshRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.AuthenticationResponse;
 import com.datnguyen.rem.dto.response.IntrospectResponse;
-import com.datnguyen.rem.service.AuthenticationService;
-import com.datnguyen.rem.service.UserService;
+import com.datnguyen.rem.service.impl.AuthenticationServiceImpl;
+import com.datnguyen.rem.service.impl.UserServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +27,26 @@ public class AuthenticationController {
     @Value("${dev.site}")
     @NonFinal
     String url;
-    AuthenticationService authenticationService;
-    UserService userService;
+    AuthenticationServiceImpl authenticationServiceImpl;
+    UserServiceImpl userServiceImpl;
 
 
     @PostMapping("/logIn")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws JOSEException {
-        var result = authenticationService.authentication(request);
+        var result = authenticationServiceImpl.authentication(request);
         return ApiResponse.<AuthenticationResponse>builder().
                 result(result).build();
     }
     @PostMapping("/logout")
     ApiResponse<String> logout(@RequestBody LogoutRequest request)
             throws ParseException, JOSEException {
-        authenticationService.logout(request);
+        authenticationServiceImpl.logout(request);
         return ApiResponse.<String>builder().message("Log out success").build();
     }
     @PostMapping("/refresh")
     ApiResponse<AuthenticationResponse> logout(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
-        var result= authenticationService.refreshToken(request);
+        var result= authenticationServiceImpl.refreshToken(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
@@ -54,7 +54,7 @@ public class AuthenticationController {
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
-        var result=authenticationService.introspect(request);
+        var result= authenticationServiceImpl.introspect(request);
         return ApiResponse.<IntrospectResponse>builder().
                 result(result).build();
     }

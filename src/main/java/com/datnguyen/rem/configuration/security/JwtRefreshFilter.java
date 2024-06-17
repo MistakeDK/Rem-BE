@@ -1,7 +1,7 @@
 package com.datnguyen.rem.configuration.security;
 
 import com.datnguyen.rem.dto.request.LogoutRequest;
-import com.datnguyen.rem.service.AuthenticationService;
+import com.datnguyen.rem.service.impl.AuthenticationServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
@@ -21,7 +21,7 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class JwtRefreshFilter extends OncePerRequestFilter {
-    AuthenticationService authenticationService;
+    AuthenticationServiceImpl authenticationServiceImpl;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -29,10 +29,10 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 SignedJWT signedJWT = SignedJWT.parse(token);
-                if (authenticationService.needsRefresh(signedJWT)) {
-                    String newToken = authenticationService.refreshJwt(signedJWT);
+                if (authenticationServiceImpl.needsRefresh(signedJWT)) {
+                    String newToken = authenticationServiceImpl.refreshJwt(signedJWT);
                     response.setHeader("Authorization", "Bearer " + newToken);
-                    authenticationService.logout(LogoutRequest.builder().token(token).build());
+                    authenticationServiceImpl.logout(LogoutRequest.builder().token(token).build());
                 }
             } catch (ParseException | JOSEException e) {
                 throw new ServletException("Invalid JWT token", e);

@@ -1,4 +1,5 @@
 package com.datnguyen.rem.configuration;
+import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.entity.Category;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.enums.Role;
@@ -23,12 +24,12 @@ public class ApplicationInitConfig {
     ApplicationRunner applicationRunner(UserRepository userRepository, CategoryRepository categoryRepository){
         return args -> {
             if(userRepository.findByusername("admin").isEmpty()){
-                User user= User.builder()
-                        .username("admin")
-                        .role(Role.ADMIN)
-                        .isActive(true)
-                        .password(passwordEncoder.encode("12345678"))
-                        .build();
+                User user=new User();
+                user.setUsername("admin");
+                user.setRole(Role.ADMIN);
+                user.setIsActive(true);
+                user.setIsBan(false);
+                user.setPassword(passwordEncoder.encode("12345678"));
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin,please change password");
             }

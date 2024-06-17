@@ -15,7 +15,6 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends AbstractEntity {
@@ -29,12 +28,10 @@ public class User extends AbstractEntity {
     String email;
     String phone;
     LocalDate dob;
-    @Builder.Default
-    Boolean isActive=false;
-    @Builder.Default
-    Boolean isBan=false;
-    @Builder.Default
+    Boolean isActive;
+    Boolean isBan;
     @Enumerated(EnumType.STRING)
     Role role=Role.USER;
+    @Transient
     String verificationCode;
 }

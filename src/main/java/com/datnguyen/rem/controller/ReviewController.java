@@ -2,7 +2,7 @@ package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.ReviewRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
-import com.datnguyen.rem.service.ReviewService;
+import com.datnguyen.rem.service.impl.ReviewServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class ReviewController {
-    ReviewService service;
+    ReviewServiceImpl service;
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping()
     public ResponseEntity<?> createReview(@RequestBody ReviewRequest request){

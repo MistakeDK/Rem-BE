@@ -2,9 +2,8 @@ package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.OrderRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
-import com.datnguyen.rem.service.OrderService;
+import com.datnguyen.rem.service.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class OrderController {
-    OrderService service;
+    OrderServiceImpl service;
     @PostMapping("")
     ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequest request){
         var result= service.createOrder(request);

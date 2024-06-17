@@ -2,7 +2,7 @@ package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.PromotionRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
-import com.datnguyen.rem.service.PromotionService;
+import com.datnguyen.rem.service.impl.PromotionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 @RequiredArgsConstructor
 public class PromotionController {
-    PromotionService service;
+    PromotionServiceImpl service;
     @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<?> addPromotion(@Valid @RequestBody PromotionRequest promotionRequest){

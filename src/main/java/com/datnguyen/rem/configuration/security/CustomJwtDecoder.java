@@ -1,7 +1,7 @@
 package com.datnguyen.rem.configuration.security;
 
 import com.datnguyen.rem.dto.request.IntrospectRequest;
-import com.datnguyen.rem.service.AuthenticationService;
+import com.datnguyen.rem.service.impl.AuthenticationServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,13 +21,13 @@ public class CustomJwtDecoder implements JwtDecoder {
     @Value("${jwt.private_key}")
     private String private_key;
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationServiceImpl;
     private NimbusJwtDecoder nimbusJwtDecoder=null;
 
     @Override
     public Jwt decode(String token) throws JwtException {
        try {
-           var response= authenticationService.introspect(IntrospectRequest.builder()
+           var response= authenticationServiceImpl.introspect(IntrospectRequest.builder()
                    .token(token).build());//kiem tra token valid
            if(!response.isValid()){
                throw new JwtException("Token invalid");

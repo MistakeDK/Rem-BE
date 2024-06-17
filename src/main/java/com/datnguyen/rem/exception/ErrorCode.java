@@ -11,7 +11,7 @@ public enum ErrorCode {
     UNAUTHENTICATED( "not authenticated",HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRE("Token has been expire",HttpStatus.BAD_REQUEST),
     USER_IS_BAN("user is ban",HttpStatus.BAD_REQUEST),
-    VERIFY_CODE_NOT_EXIST("code is not exist",HttpStatus.BAD_REQUEST),
+    VERIFY_CODE_NOT_VALID("Code is not valid",HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST( "User not found",HttpStatus.NOT_FOUND),
     PASSWORD_INVALID( "password must be at least 8 characters",HttpStatus.BAD_REQUEST),
     NAME_INVALID("name must be at least 4 characters",HttpStatus.BAD_REQUEST),

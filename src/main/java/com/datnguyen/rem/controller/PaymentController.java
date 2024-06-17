@@ -1,11 +1,9 @@
 package com.datnguyen.rem.controller;
 
-import com.datnguyen.rem.dto.request.OrderRequest;
-import com.datnguyen.rem.service.OrderService;
-import com.datnguyen.rem.service.PaymentService;
+import com.datnguyen.rem.service.impl.OrderServiceImpl;
+import com.datnguyen.rem.service.impl.PaymentServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +18,8 @@ import java.io.IOException;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 @RequestMapping("/payment")
 public class PaymentController {
-    PaymentService paymentService;
-    OrderService orderService;
+    PaymentServiceImpl paymentServiceImpl;
+    OrderServiceImpl orderServiceImpl;
     @Value("${VNPay.successUrl}")
     @NonFinal
     String successUrl;
@@ -31,7 +29,7 @@ public class PaymentController {
     @GetMapping("/vn-pay/{orderId}")
     ResponseEntity<?> CreateUrlPaymentVNPay(HttpServletRequest request,
                                             @PathVariable String orderId){
-        var result=paymentService.createVNPayPayment(request,orderId);
+        var result= paymentServiceImpl.createVNPayPayment(request,orderId);
         return ResponseEntity.ok().body(result);
     }
     @GetMapping("/vn-pay-callback")
@@ -43,7 +41,7 @@ public class PaymentController {
         String status=request.getParameter("vnp_ResponseCode");
         String orderId=request.getParameter("vnp_TxnRef");
         if(status.equals("00")){
-            orderService.paidOrderById(orderId);
+            orderServiceImpl.paidOrderById(orderId);
         }else {
             urlRedirect=failUrl;
         }

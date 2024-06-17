@@ -2,7 +2,7 @@ package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.CartDetailRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
-import com.datnguyen.rem.service.CartDetailService;
+import com.datnguyen.rem.service.impl.CartDetailServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CartDetailController {
-    CartDetailService cartDetailService;
+    CartDetailServiceImpl cartDetailServiceImpl;
     @GetMapping("/getList/{idUser}")
     ResponseEntity<ApiResponse<?>> getList(@PathVariable(name = "idUser") String id ){
-        var cartResponse=cartDetailService.getList(id);
+        var cartResponse= cartDetailServiceImpl.getList(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(cartResponse).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @PostMapping("/changeQuantity/{idUser}")
     ResponseEntity<ApiResponse<?>>  ChangeQuantity(@Valid @RequestBody CartDetailRequest request,
                                                    @PathVariable String idUser){
-        cartDetailService.changeQuantity(request,idUser);
+        cartDetailServiceImpl.changeQuantity(request,idUser);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Quantity Success").build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
