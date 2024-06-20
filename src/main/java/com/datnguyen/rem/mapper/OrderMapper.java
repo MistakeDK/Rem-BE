@@ -7,11 +7,11 @@ import com.datnguyen.rem.entity.Order;
 
 import com.datnguyen.rem.entity.OrderDetail;
 import com.datnguyen.rem.entity.Promotion;
+import com.datnguyen.rem.exception.AppException;
+import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.repository.PromotionRepository;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.aspectj.weaver.ast.Or;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +21,17 @@ import java.util.Set;
 public interface OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "promotionCode",target = "promotion.promotionCode")
-    Order toOrder(OrderRequest request);
+    Order toOrder(OrderRequest request,@Context PromotionRepository promotionRepository);
+    @AfterMapping
+    default void setProperty(@MappingTarget Order target,OrderRequest request,@Context PromotionRepository repository){
+        if(request.getPromotionCode()==null){
+            target.setPromotion(null);
+            return;
+        }
+        Promotion promotion= repository.findById(target.getPromotion().getPromotionCode())
+                .orElseThrow(()->new AppException(ErrorCode.PROMOTION_NOT_EXIST));
+        target.setPromotion(promotion);
+    }
 
 
 

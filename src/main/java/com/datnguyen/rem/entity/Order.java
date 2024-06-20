@@ -12,7 +12,6 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +21,6 @@ public class Order extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     OrderStatus status=OrderStatus.RECEIVED;
     @Enumerated(EnumType.STRING)
     PaymentType paymentType;
@@ -37,9 +35,9 @@ public class Order extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "promotion_code",nullable = true)
     Promotion promotion;
-    @Builder.Default
     Boolean isPaid=false;
     public Date getTimeCreate(){
         return super.getTimeCreate();
     }
+    Double total;
 }

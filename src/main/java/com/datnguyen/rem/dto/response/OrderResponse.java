@@ -25,4 +25,5 @@ public class OrderResponse {
     Boolean isPaid;
     PaymentType paymentType;
     List<OrderDetailResponse> orderDetails;
+    Double total;
 }

@@ -25,7 +25,7 @@ public enum ErrorCode {
     CATEGORY_NOT_EXISTED("Category is not existed",HttpStatus.NOT_FOUND),
     PRICE_INVALID("Price must be greater than 10000",HttpStatus.UNPROCESSABLE_ENTITY),
     PRODUCT_NOT_EXIST("Product is not exist",HttpStatus.NOT_FOUND),
-    PROMOTION_NOT_EXIST("Promotion is not exist",HttpStatus.NOT_FOUND),
+    PROMOTION_NOT_EXIST("Promotion is not exist",HttpStatus.BAD_REQUEST),
     PROMOTION_EXIST("Promotion is existed",HttpStatus.BAD_REQUEST),
     PROMOTION_CODE_IS_EMPTY("Promotion code is empty",HttpStatus.BAD_REQUEST),
     PROMOTION_TYPE_IS_EMPTY("Promotion type is empty",HttpStatus.BAD_REQUEST),

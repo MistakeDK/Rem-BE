@@ -7,6 +7,7 @@ import com.datnguyen.rem.mapper.OrderMapper;
 import com.datnguyen.rem.repository.CartDetailRepository;
 import com.datnguyen.rem.repository.OrderDetailRepository;
 import com.datnguyen.rem.repository.OrderRepository;
+import com.datnguyen.rem.repository.PromotionRepository;
 import com.datnguyen.rem.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +26,17 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
     OrderDetailRepository orderDetailRepository;
     CartDetailRepository cartDetailRepository;
+    PromotionRepository promotionRepository;
     OrderMapper orderMapper;
     @Transactional
     @Override
     public String createOrder(OrderRequest request){
-        Order order=orderMapper.toOrder(request);
+        Order order=orderMapper.toOrder(request,promotionRepository);
         var listCart=cartDetailRepository.findByCartDetailIdUserId(request.getUserId());
         var listOrder=orderMapper.toListOrderDetail(listCart);
         listOrder.forEach(orderDetail -> orderDetail.setOrder(order));
         order.setOrderDetails(listOrder);
-        if(order.getPromotion().getPromotionCode()==null){
-            order.setPromotion(null);
-        }
+        order.setTotal(calculateTotal(order));
         cartDetailRepository.deleteByCartDetailId_User_Id(request.getUserId());
         orderRepository.save(order);
         return order.getId();
@@ -62,5 +62,23 @@ public class OrderServiceImpl implements OrderService {
                 .items(listOrder.stream().map(orderMapper::toOrderResponse))
                 .totalPage(listOrder.getTotalPages())
                 .build();
+    }
+    public static Double calculateTotal(Order order){
+        Double total=order.getOrderDetails().stream()
+                .map(item->item.getPrice()*item.getQuantity()).reduce((double) 0,(Double::sum));
+        if(order.getPromotion()==null){
+            return total;
+        }
+        switch (order.getPromotion().getType()){
+            case DIRECT -> {
+                total-=order.getPromotion().getValue();
+            }
+            case PERCENT -> {
+                double value=1-(order.getPromotion().getValue() / 100);
+                total*=value;
+            }
+        }
+        return (double) Math.round(total);
+
     }
 }
