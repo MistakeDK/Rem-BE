@@ -1,6 +1,7 @@
 package com.datnguyen.rem.entity;
 
 import com.datnguyen.rem.enums.Role;
+import com.datnguyen.rem.enums.UserProvide;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,6 +33,8 @@ public class User extends AbstractEntity {
     Boolean isBan;
     @Enumerated(EnumType.STRING)
     Role role=Role.USER;
+    @Enumerated(EnumType.STRING)
+    UserProvide userProvide;
     @Transient
     String verificationCode;
 }

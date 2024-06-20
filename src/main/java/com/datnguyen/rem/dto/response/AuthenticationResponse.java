@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticationResponse {
     String id;
+    String username;
     boolean authenticated;
     String token;
 }

@@ -1,22 +1,24 @@
 package com.datnguyen.rem.service.impl;
 
-import com.datnguyen.rem.dto.request.AuthenticationRequest;
-import com.datnguyen.rem.dto.request.IntrospectRequest;
-import com.datnguyen.rem.dto.request.LogoutRequest;
-import com.datnguyen.rem.dto.request.RefreshRequest;
+import com.datnguyen.rem.dto.request.*;
 import com.datnguyen.rem.dto.response.AuthenticationResponse;
 import com.datnguyen.rem.dto.response.IntrospectResponse;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
+import com.datnguyen.rem.mapper.UserMapper;
+import com.datnguyen.rem.repository.httpClient.OutboundIdentityClient;
 import com.datnguyen.rem.repository.UserRepository;
+import com.datnguyen.rem.repository.httpClient.OutboundUserClient;
 import com.datnguyen.rem.service.AuthenticationService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -43,12 +45,52 @@ import java.util.UUID;
 public class AuthenticationServiceImpl implements AuthenticationService {
     UserRepository userRepository;
     BaseRedisServiceImpl baseRedisService;
+    OutboundIdentityClient outboundIdentityClient;
+    OutboundUserClient outboundUserClient;
+    UserMapper userMapper;
     @NonFinal
     @Value("${jwt.private_key}")
     protected String PRIVATE_KEY;
     @NonFinal
     @Value("${jwt.valid-duration}")
     protected long VALID_DURATION;
+    @NonFinal
+    @Value("${google.clientID}")
+    protected String CLIENT_ID;
+
+    @NonFinal
+    @Value("${google.clientSecret}")
+    protected String CLIENT_SECRET;
+
+    @NonFinal
+    @Value("${google.redirectUri}")
+    protected String REDIRECT_URI;
+
+    @NonFinal
+    @Value("${google.grantType}")
+    protected String GRANT_TYPE;
+
+    @Override
+    @Transactional
+    public AuthenticationResponse outboundAuthenticate(String code) throws JOSEException {
+        ExchangeTokenRequest exchangeTokenRequest=ExchangeTokenRequest.builder()
+                .code(code)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .redirectUri(REDIRECT_URI)
+                .grantType(GRANT_TYPE)
+                .build();
+        var response=outboundIdentityClient.exchangeToken(exchangeTokenRequest);
+        var userInfo=outboundUserClient.getUserInfo("json",response.getAccessToken());
+        var user=userRepository.findByEmail(userInfo.getEmail())
+                .orElseGet(() -> userRepository.save(userMapper.toUserFromOutBound(userInfo)));
+        String token=generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .username(user.getUsername())
+                .build();
+    }
 
     @Override
     public void logout(LogoutRequest request)
@@ -68,11 +110,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throws ParseException, JOSEException {
         var singedToken= verifyToken(request.getRefreshToken());
         var username=singedToken.getJWTClaimsSet().getSubject();
-        var user=userRepository.findByusername(username).
+        var user=userRepository.findByUsername(username).
                 orElseThrow(()->new AppException(ErrorCode.UNAUTHENTICATED));
         var token=generateToken(user);
         return  AuthenticationResponse.builder()
                 .authenticated(true)
+                .username(user.getUsername())
                 .token(token)
                 .build();
     }
@@ -96,7 +139,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse authentication(AuthenticationRequest request)
             throws JOSEException {
-        var user=userRepository.findByusername(
+        var user=userRepository.findByUsername(
                 request.getUsername()).orElseThrow(()-> new  AppException(ErrorCode.USER_NOT_EXIST));
         if(!user.getIsActive()){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -111,6 +154,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .id(user.getId())
+                .username(user.getUsername())
                 .authenticated(true).build();
     }
     @Override
@@ -141,7 +185,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         SignedJWT signedJWT=SignedJWT.parse(token);
         Date expiryTime=signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified= signedJWT.verify(verifier);
-        var user=userRepository.findByusername(signedJWT.getJWTClaimsSet().getSubject()).
+        var user=userRepository.findByUsername(signedJWT.getJWTClaimsSet().getSubject()).
                 orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
         if(user.getIsBan()){
             throw new AppException(ErrorCode.USER_IS_BAN);

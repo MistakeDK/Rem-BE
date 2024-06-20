@@ -13,6 +13,7 @@ import com.nimbusds.jwt.SignedJWT;
 import java.text.ParseException;
 
 public interface AuthenticationService {
+    AuthenticationResponse outboundAuthenticate(String code) throws JOSEException;
     void logout(LogoutRequest request) throws JOSEException;
     AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
     String generateToken(User user) throws JOSEException;

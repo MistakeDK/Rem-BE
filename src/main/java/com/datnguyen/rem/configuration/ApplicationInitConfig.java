@@ -1,5 +1,4 @@
 package com.datnguyen.rem.configuration;
-import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.entity.Category;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.enums.Role;
@@ -23,7 +22,7 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository, CategoryRepository categoryRepository){
         return args -> {
-            if(userRepository.findByusername("admin").isEmpty()){
+            if(userRepository.findByUsername("admin").isEmpty()){
                 User user=new User();
                 user.setUsername("admin");
                 user.setRole(Role.ADMIN);

@@ -28,11 +28,19 @@ public class AuthenticationController {
     @NonFinal
     String url;
     AuthenticationServiceImpl authenticationServiceImpl;
-    UserServiceImpl userServiceImpl;
 
+    @PostMapping("/outbound/authentication")
+    ApiResponse<AuthenticationResponse> outboundAuthentication(@RequestParam("code") String code)
+            throws JOSEException {
+        var result=authenticationServiceImpl.outboundAuthenticate(code);
+        return  ApiResponse.<AuthenticationResponse>builder()
+                .result(result)
+                .build();
+    }
 
     @PostMapping("/logIn")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws JOSEException {
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
+            throws JOSEException {
         var result = authenticationServiceImpl.authentication(request);
         return ApiResponse.<AuthenticationResponse>builder().
                 result(result).build();
@@ -44,7 +52,7 @@ public class AuthenticationController {
         return ApiResponse.<String>builder().message("Log out success").build();
     }
     @PostMapping("/refresh")
-    ApiResponse<AuthenticationResponse> logout(@RequestBody RefreshRequest request)
+    ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
         var result= authenticationServiceImpl.refreshToken(request);
         return ApiResponse.<AuthenticationResponse>builder()

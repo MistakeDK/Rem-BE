@@ -4,7 +4,6 @@ import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.UserResponse;
 import com.datnguyen.rem.entity.User;
-import com.datnguyen.rem.enums.Role;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.UserMapper;
@@ -21,14 +20,12 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 
 @Service
@@ -44,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse createUser(UserCreationRequest request)
             throws MessagingException, IOException, TemplateException {
-        if(userRepository.existsByusername(request.getUsername())){
+        if(userRepository.existsByUsername(request.getUsername())){
             throw  new AppException(ErrorCode.USER_EXISTED);
         }
         User user=userMapper.toUser(request);
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getMyInfo(){
         var context= SecurityContextHolder.getContext();
         String name=context.getAuthentication().getName();
-        return userMapper.toUserResponse(userRepository.findByusername(name).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST)));
+        return userMapper.toUserResponse(userRepository.findByUsername(name).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST)));
     }
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void processVerify(String userName,String code){
-        User user=userRepository.findByusername(userName)
+        User user=userRepository.findByUsername(userName)
                 .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
         String verificationCode= baseRedisService.hashGet(userName,"verificationCode").toString();
         if(!Objects.equals(verificationCode, code)){
