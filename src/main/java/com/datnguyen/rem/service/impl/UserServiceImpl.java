@@ -1,5 +1,6 @@
 package com.datnguyen.rem.service.impl;
 
+import com.datnguyen.rem.dto.request.ChangePasswordRequest;
 import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.UserResponse;
@@ -96,4 +97,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    @PreAuthorize("hasAuthority('USER')")
+    @Transactional
+    public void ChangePassword(ChangePasswordRequest request,String id){
+        var user=userRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
+        boolean isMatch= passwordEncoder.matches(request.getOldPassword(), user.getPassword());
+        if(!isMatch){
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    }
 }

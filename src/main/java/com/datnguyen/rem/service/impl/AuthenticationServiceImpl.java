@@ -145,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         PasswordEncoder passwordEncoder=new BCryptPasswordEncoder(10);
-        boolean authenticated= user.getPassword()==null ||
+        boolean authenticated=
                 passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);

@@ -1,5 +1,7 @@
 package com.datnguyen.rem.controller;
 
+import com.cloudinary.Api;
+import com.datnguyen.rem.dto.request.ChangePasswordRequest;
 import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
@@ -73,6 +75,13 @@ public class UserController {
                                         @PathVariable String username){
         userServiceImpl.processVerify(username,code);
         ApiResponse<?> apiResponse= ApiResponse.builder().message("Active Success").build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+    @PatchMapping("/changePassword/{idUser}")
+    ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request,
+                                     @PathVariable("idUser") String id){
+        userServiceImpl.ChangePassword(request,id);
+        ApiResponse<?> apiResponse=ApiResponse.builder().message("Password has been change success").build();
         return ResponseEntity.ok().body(apiResponse);
     }
 }

@@ -10,6 +10,7 @@ public enum ErrorCode {
     UN_AUTHORIZATION("don't have permission",HttpStatus.FORBIDDEN),
     UNAUTHENTICATED( "not authenticated",HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRE("Token has been expire",HttpStatus.BAD_REQUEST),
+    PASSWORD_NOT_MATCH("Password is wrong",HttpStatus.BAD_REQUEST),
     USER_IS_BAN("user is ban",HttpStatus.BAD_REQUEST),
     VERIFY_CODE_NOT_VALID("Code is not valid",HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST( "User not found",HttpStatus.NOT_FOUND),
