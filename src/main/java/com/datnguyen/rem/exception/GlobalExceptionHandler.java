@@ -1,6 +1,7 @@
 package com.datnguyen.rem.exception;
 
 import com.datnguyen.rem.dto.response.ApiResponse;
+import com.datnguyen.rem.dto.response.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,13 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse<String>> handlingAppException(AppException exception){
+    ResponseEntity<ErrorResponse> handlingAppException(AppException exception){
         ErrorCode errorCode=exception.getErrorCode();
-        ApiResponse<String> apiResponse=ApiResponse.<String>builder().message(errorCode.getMessage()).build();
-        return  ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+        ErrorResponse response= ErrorResponse.builder()
+                .code(errorCode.getCodeException())
+                .message(errorCode.getMessage())
+                .build();
+        return  ResponseEntity.status(errorCode.getStatusCode()).body(response);
     }
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<?> handlingValidation(MethodArgumentNotValidException exception){

@@ -1,5 +1,6 @@
 package com.datnguyen.rem.dto.response;
 
+import com.datnguyen.rem.enums.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

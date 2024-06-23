@@ -18,7 +18,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -142,13 +141,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user=userRepository.findByUsername(
                 request.getUsername()).orElseThrow(()-> new  AppException(ErrorCode.USER_NOT_EXIST));
         if(!user.getIsActive()){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.USER_IS_BAN);
         }
         PasswordEncoder passwordEncoder=new BCryptPasswordEncoder(10);
         boolean authenticated=
                 passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.USERNAME_OR_PASSWORD_WRONG);
         }
         var token=generateToken(user);
         return AuthenticationResponse.builder()

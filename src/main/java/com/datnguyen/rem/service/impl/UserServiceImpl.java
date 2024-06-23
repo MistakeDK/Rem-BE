@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse createUser(UserCreationRequest request)
             throws MessagingException, IOException, TemplateException {
-        if(userRepository.existsByUsername(request.getUsername())){
+        if(userRepository.existsByUsername(request.getUsername())||userRepository.existsByEmail(request.getEmail())){
             throw  new AppException(ErrorCode.USER_EXISTED);
         }
         User user=userMapper.toUser(request);
