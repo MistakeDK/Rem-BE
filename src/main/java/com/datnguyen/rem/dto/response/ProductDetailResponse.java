@@ -16,4 +16,6 @@ public class ProductDetailResponse {
     Boolean isActive;
     Long totalReview;
     Double rateStar;
+    String category;
+    String categoryId;
 }

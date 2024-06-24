@@ -1,6 +1,7 @@
 package com.datnguyen.rem.service.impl;
 
 import com.datnguyen.rem.dto.request.ProductRequest;
+import com.datnguyen.rem.dto.request.ProductUpdateRequest;
 import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.dto.response.ProductDetailResponse;
 import com.datnguyen.rem.entity.Product;
@@ -48,5 +49,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponse<?> getList(int pageNo, int pageSize, String sorts,String category,String... search){
         return searchRepository.advancedSearchProductWithCriteria(pageNo,pageSize,sorts,category,search);
+    }
+    @Transactional
+    public void edit(String id, ProductUpdateRequest request){
+        var product=productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
+        mapper.updateProduct(product,request,categoryRepository);
     }
 }

@@ -1,6 +1,7 @@
 package com.datnguyen.rem.controller;
 
 import com.datnguyen.rem.dto.request.ProductRequest;
+import com.datnguyen.rem.dto.request.ProductUpdateRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.ProductDetailResponse;
 import com.datnguyen.rem.service.impl.CloundinaryServiceImpl;
@@ -55,5 +56,13 @@ public class ProductController {
     public ResponseEntity<Map> uploadImg(@RequestParam("image")MultipartFile file) throws IOException {
         Map data= cloundinaryServiceImpl.uploadFile(file);
         return new ResponseEntity<>(data,HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> edit(@PathVariable String id, @Valid @RequestBody ProductUpdateRequest request){
+        productServiceImpl.edit(id,request);
+        ApiResponse<?> apiResponse=ApiResponse.builder().message("change product Success").build();
+        return ResponseEntity.ok().body(apiResponse);
     }
 }
