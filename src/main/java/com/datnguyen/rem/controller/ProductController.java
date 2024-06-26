@@ -6,6 +6,7 @@ import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.dto.response.ProductDetailResponse;
 import com.datnguyen.rem.service.impl.CloundinaryServiceImpl;
 import com.datnguyen.rem.service.impl.ProductServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable String id){
+    public ResponseEntity<?> getById(@PathVariable String id) throws JsonProcessingException {
         ProductDetailResponse product= productServiceImpl.getProductById(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(product).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);

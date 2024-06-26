@@ -1,13 +1,10 @@
 package com.datnguyen.rem.service.impl;
 
 import com.datnguyen.rem.service.BaseRedisService;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class BaseRedisServiceImpl implements BaseRedisService {
     private final RedisTemplate<String,Object> redisTemplate;
     private final HashOperations<String,String,Object> hashOperations;
+    private final SetOperations<String,Object> setOperations;
     @Override
     public void Set(String key, String value) {
         redisTemplate.opsForValue().set(key,value);
@@ -29,7 +27,10 @@ public class BaseRedisServiceImpl implements BaseRedisService {
     public void Set(String key,String value,long ttl){
         redisTemplate.opsForValue().set(key,value,ttl,TimeUnit.SECONDS);
     }
-
+    @Override
+    public void addToSet(String key, Object value){
+        setOperations.add(key,value);
+    }
     @Override
     public void SetTimeToLive(String key, long timeoutInSecond) {
         redisTemplate.expire(key,timeoutInSecond, TimeUnit.SECONDS);
@@ -49,6 +50,7 @@ public class BaseRedisServiceImpl implements BaseRedisService {
     public boolean hashExists(String key, String field) {
         return hashOperations.hasKey(key,field);
     }
+
 
     @Override
     public Object get(String key) {
@@ -78,6 +80,18 @@ public class BaseRedisServiceImpl implements BaseRedisService {
     @Override
     public Set<String> getFieldPreFixes(String key) {
         return hashOperations.entries(key).keySet();
+    }
+    @Override
+    public Set<Object> getSetMember(String key){
+        return setOperations.members(key);
+    }
+    @Override
+    public boolean isMemberOfSet(String key, Object value){
+        return Boolean.TRUE.equals(setOperations.isMember(key,value));
+    }
+    @Override
+    public void removeFromSet(String key,Object value){
+        setOperations.remove(key,value);
     }
 
     @Override

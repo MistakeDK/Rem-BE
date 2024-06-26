@@ -1,6 +1,7 @@
 package com.datnguyen.rem.repository;
 
 import com.datnguyen.rem.dto.response.PageResponse;
+import com.datnguyen.rem.dto.response.ProductResponse;
 import com.datnguyen.rem.entity.Category;
 import com.datnguyen.rem.entity.Product;
 import com.datnguyen.rem.mapper.ProductMapper;
@@ -93,7 +94,7 @@ public class SearchRepository {
                 .pageSize(pageSize)
                 .totalItem(totalElement.intValue())
                 .totalPage((int) Math.ceil((double) totalElement.intValue() /pageSize))//total element
-                .items(products.stream().map(productMapper::toProductResponse))
+                .items(products.stream().map(productMapper::toProductResponse).toList())
                 .build();
     }
 

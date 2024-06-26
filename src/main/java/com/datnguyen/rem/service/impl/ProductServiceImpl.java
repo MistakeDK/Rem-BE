@@ -13,6 +13,7 @@ import com.datnguyen.rem.repository.ProductRepository;
 import com.datnguyen.rem.repository.ReviewRepository;
 import com.datnguyen.rem.repository.SearchRepository;
 import com.datnguyen.rem.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     CategoryRepository categoryRepository;
     ReviewRepository reviewRepository;
     ProductMapper mapper;
+    ProductRedisServiceImpl productRedisServiceImpl;
     @Transactional
     @Override
     public void addProduct(ProductRequest request) throws IOException {
@@ -44,9 +46,14 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
     @Override
-    public ProductDetailResponse getProductById(String id){
-        var product= productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
-        return mapper.toProductDetailResponse(product,reviewRepository);
+    public ProductDetailResponse getProductById(String id) throws JsonProcessingException {
+        var productCache= productRedisServiceImpl.getProduct(id);
+        if(productCache==null){
+            var product= productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXIST));
+            productRedisServiceImpl.saveProduct(product);
+            return mapper.toProductDetailResponse(product,reviewRepository);
+        }
+        return mapper.toProductDetailResponse(productCache,reviewRepository);
     }
     @Override
     public PageResponse<?> getList(int pageNo, int pageSize, String sorts,String category,String... search){
