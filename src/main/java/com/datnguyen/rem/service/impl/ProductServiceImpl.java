@@ -39,6 +39,8 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(categoryRepository.
                 findById(request.getCategoryId()).
                 orElseThrow(()->new AppException(ErrorCode.CATEGORY_NOT_EXISTED)));
+        product.setIsHot(false);
+        product.setIsNew(false);
         productRepository.save(product);
     }
     @Override

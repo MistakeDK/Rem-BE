@@ -22,6 +22,10 @@ public class Product extends AbstractEntity {
     @Builder.Default
     Boolean isActive=true;
     String description;
+    @Builder.Default
+    Boolean isHot=false;
+    @Builder.Default
+    Boolean isNew=false;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     Category category;

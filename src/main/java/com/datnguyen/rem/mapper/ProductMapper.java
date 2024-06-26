@@ -29,6 +29,8 @@ public interface ProductMapper {
 
 
     @Mapping(target = "id",ignore = true)
+    @Mapping(target = "isNew",source = "isNew")
+    @Mapping(target = "isHot",source = "isHot")
     void updateProduct(@MappingTarget Product product, ProductUpdateRequest request,@Context CategoryRepository repository);
     @AfterMapping
     default void setCategory(@MappingTarget Product target,

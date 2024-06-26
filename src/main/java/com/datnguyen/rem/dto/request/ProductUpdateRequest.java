@@ -20,4 +20,8 @@ public class ProductUpdateRequest {
     String name;
     @NonNull
     Double price;
+    @NonNull
+    Boolean isHot;
+    @NonNull
+    Boolean isNew;
 }

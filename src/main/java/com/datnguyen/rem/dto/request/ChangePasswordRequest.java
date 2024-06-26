@@ -1,5 +1,6 @@
 package com.datnguyen.rem.dto.request;
 
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 public class ChangePasswordRequest {
     @NonNull
     String oldPassword;
-    @NonNull
+    @Size(min=8,message = "PASSWORD_INVALID")
     String newPassword;
 }

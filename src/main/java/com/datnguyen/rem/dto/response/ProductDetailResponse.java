@@ -18,4 +18,6 @@ public class ProductDetailResponse {
     Double rateStar;
     String category;
     String categoryId;
+    Boolean isHot;
+    Boolean isNew;
 }
