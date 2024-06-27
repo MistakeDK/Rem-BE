@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
                 .pageNo(pageNo+1)
                 .pageSize(pageSize)
                 .totalItem(listOrder.getTotalElements())
-                .items(listOrder.stream().map(orderMapper::toOrderResponse))
+                .items(listOrder.stream().map(orderMapper::toOrderResponse).toList())
                 .totalPage(listOrder.getTotalPages())
                 .build();
     }

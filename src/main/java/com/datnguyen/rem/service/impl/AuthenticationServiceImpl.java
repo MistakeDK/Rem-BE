@@ -85,6 +85,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseGet(() -> userRepository.save(userMapper.toUserFromOutBound(userInfo)));
         String token=generateToken(user);
         return AuthenticationResponse.builder()
+                .id(user.getId())
                 .token(token)
                 .authenticated(true)
                 .username(user.getUsername())

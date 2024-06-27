@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
@@ -17,6 +20,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -53,15 +57,6 @@ public class RedisConfig {
     @Bean
     public SetOperations<String,Object> SetOperations(){
         return redisTemplate().opsForSet();
-    }
-    @Bean
-    public ObjectMapper redisObjectMapper(){
-        ObjectMapper objectMapper=new ObjectMapper();
-        SimpleModule module=new SimpleModule();
-        module.addSerializer(Date.class,new DateSerializer());
-        module.addDeserializer(Date.class,new DateDeserializers.DateDeserializer());
-        objectMapper.registerModule(module);
-        return objectMapper;
     }
 
 }

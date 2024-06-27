@@ -5,6 +5,7 @@ import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.UserResponse;
 import com.datnguyen.rem.entity.User;
+import com.datnguyen.rem.enums.UserProvide;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.UserMapper;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
         }
         User user=userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserProvide(UserProvide.LOCAL);
         userRepository.save(user);
         mailServiceImpl.sendVerificationEmail(user);
         baseRedisService.hashSet(user.getUsername(),"verificationCode",user.getVerificationCode());

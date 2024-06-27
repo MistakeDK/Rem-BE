@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.datnguyen.rem.dto.request.CartDetailRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.service.impl.CartDetailServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,8 @@ public class CartDetailController {
     }
     @PostMapping("/changeQuantity/{idUser}")
     ResponseEntity<ApiResponse<?>>  ChangeQuantity(@Valid @RequestBody CartDetailRequest request,
-                                                   @PathVariable String idUser){
+                                                   @PathVariable String idUser)
+            throws JsonProcessingException {
         cartDetailServiceImpl.changeQuantity(request,idUser);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Quantity Success").build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
