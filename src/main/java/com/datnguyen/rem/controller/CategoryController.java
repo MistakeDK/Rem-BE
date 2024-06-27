@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.datnguyen.rem.dto.request.CategoryRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.service.impl.CategoryServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,15 +25,9 @@ public class CategoryController {
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Add new Category Success").build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> DeleteCategory(@PathVariable String id){
-        categoryServiceImpl.deleteByID(id);
-        ApiResponse<?> apiResponse=ApiResponse.builder().message("Delete Success").build();
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
+
     @GetMapping("")
-    public  ResponseEntity<?> getListCategory(){
+    public  ResponseEntity<?> getListCategory() throws JsonProcessingException {
         ApiResponse<?> result= ApiResponse.builder().result(categoryServiceImpl.getList()).build();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

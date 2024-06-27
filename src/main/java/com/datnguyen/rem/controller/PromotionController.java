@@ -3,6 +3,7 @@ package com.datnguyen.rem.controller;
 import com.datnguyen.rem.dto.request.PromotionRequest;
 import com.datnguyen.rem.dto.response.ApiResponse;
 import com.datnguyen.rem.service.impl.PromotionServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,16 @@ public class PromotionController {
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping("/{id}")
-    ResponseEntity<?> getPromotionById(@PathVariable String id){
+    ResponseEntity<?> getPromotionById(@PathVariable String id) throws JsonProcessingException {
         var promotion=service.getPromotionByID(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(promotion).build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+    @PatchMapping("/ChangeStatus/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    ResponseEntity<?> changeStatus(@PathVariable String id){
+        service.ChangePromotionStatus(id);
+        ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Status promotion Success").build();
         return ResponseEntity.ok().body(apiResponse);
     }
 }

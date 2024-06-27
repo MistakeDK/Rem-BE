@@ -1,5 +1,6 @@
 package com.datnguyen.rem.entity;
 
+import com.datnguyen.rem.entity.eventListener.CategoryListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(CategoryListener.class)
 public class Category extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

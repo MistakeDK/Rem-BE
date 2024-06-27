@@ -8,6 +8,7 @@ import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.CategoryMapper;
 import com.datnguyen.rem.repository.CategoryRepository;
 import com.datnguyen.rem.service.CategoryService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
+    CategoryRedisServiceImpl categoryRedisService;
     @Override
     @Transactional
     public void AddCategory(CategoryRequest request){
@@ -32,11 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     }
     @Override
-    public List<CategoryResponse> getList(){
+    public List<CategoryResponse> getList() throws JsonProcessingException {
+        var categoryList=categoryRedisService.getListCategory();
+        if(categoryList!=null){
+            return categoryList.stream().map(categoryMapper::toCategoryResponse).toList();
+        }
         var result=categoryRepository.findAll();
+        categoryRedisService.saveAllCategory(result);
         return result.stream().map(categoryMapper::toCategoryResponse).toList();
-    }
-    public void deleteByID(String id){
-        categoryRepository.deleteById(id);
     }
 }

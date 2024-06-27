@@ -7,6 +7,7 @@ import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.PromotionMapper;
 import com.datnguyen.rem.repository.PromotionRepository;
 import com.datnguyen.rem.service.PromotionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class PromotionServiceImpl implements PromotionService {
     PromotionRepository repository;
     PromotionMapper mapper;
+    PromotionRedisServiceImpl promotionRedisService;
     @Transactional
     @Override
     public void addPromotion(PromotionRequest request){
@@ -29,9 +31,23 @@ public class PromotionServiceImpl implements PromotionService {
         repository.save(promotion);
     }
     @Override
-    public PromotionResponse getPromotionByID(String id){
-        var promotion=repository.findById(id);
-        return mapper.toPromotionResponse(repository.findById(id)
-                .orElseThrow(()->new AppException(ErrorCode.PROMOTION_NOT_EXIST)));
+    public PromotionResponse getPromotionByID(String promotionCode) throws JsonProcessingException {
+        var promotion=promotionRedisService.getPromotion(promotionCode);
+        if(promotion==null){
+            promotion=repository.findById(promotionCode).
+                    orElseThrow(()->new AppException(ErrorCode.PROMOTION_NOT_EXIST));
+            promotionRedisService.savePromotion(promotion);
+        }
+        if(!promotion.getActive()){
+            throw new AppException(ErrorCode.PROMOTION_IS_NOT_ACTIVE);
+        }
+        return mapper.toPromotionResponse(promotion);
+    }
+    @Override
+    @Transactional
+    public void ChangePromotionStatus(String promotionCode){
+        var promotion=repository.findById(promotionCode).
+                orElseThrow(()->new AppException(ErrorCode.PROMOTION_NOT_EXIST));
+        promotion.setActive(!promotion.getActive());
     }
 }

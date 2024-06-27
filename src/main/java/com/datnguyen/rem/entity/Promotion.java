@@ -1,10 +1,8 @@
 package com.datnguyen.rem.entity;
 
+import com.datnguyen.rem.entity.eventListener.PromotionListener;
 import com.datnguyen.rem.enums.PromotionType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(PromotionListener.class)
 public class Promotion {
     @Id
     String promotionCode;

@@ -1,14 +1,15 @@
 package com.datnguyen.rem.dto.request;
 
 import com.datnguyen.rem.enums.ActionCartQuantity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.io.Serializable;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartDetailRequest {
     @NonNull
