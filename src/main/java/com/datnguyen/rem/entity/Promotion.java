@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(PromotionListener.class)
-public class Promotion {
+public class Promotion extends AbstractEntity {
     @Id
     String promotionCode;
     @Enumerated(EnumType.STRING)

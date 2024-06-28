@@ -1,18 +1,29 @@
 package com.datnguyen.rem.service.impl;
 
 import com.datnguyen.rem.dto.request.PromotionRequest;
+import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.dto.response.PromotionResponse;
+import com.datnguyen.rem.entity.Promotion;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.PromotionMapper;
 import com.datnguyen.rem.repository.PromotionRepository;
+import com.datnguyen.rem.repository.specification.PromotionSpecificationBuilder;
 import com.datnguyen.rem.service.PromotionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -49,5 +60,31 @@ public class PromotionServiceImpl implements PromotionService {
         var promotion=repository.findById(promotionCode).
                 orElseThrow(()->new AppException(ErrorCode.PROMOTION_NOT_EXIST));
         promotion.setActive(!promotion.getActive());
+    }
+
+    @Override
+    public PageResponse<?> getList(Pageable pageable, String[] promotion) {
+        Page<Promotion> promotions=null;
+        if(promotion!=null){
+            PromotionSpecificationBuilder builder=new PromotionSpecificationBuilder();
+            for (String p:promotion){
+                Pattern pattern=Pattern.compile("(\\w+?)([:<>~!])(.*)(\\p{Punct}?)(.*)(\\p{Punct}?)");
+                Matcher matcher=pattern.matcher(p);
+                if(matcher.find()){
+                    builder.with(matcher.group(1),matcher.group(2),matcher.group(3),matcher.group(4),matcher.group(5));
+                }
+            }
+            promotions=repository.findAll(builder.build(),pageable);
+        }
+        else {
+            promotions= repository.findAll(pageable);
+        }
+        return PageResponse.builder()
+                .totalItem(promotions.getTotalElements())
+                .totalPage(promotions.getTotalPages())
+                .pageSize(pageable.getPageSize())
+                .pageNo(pageable.getPageNumber())
+                .items(promotions.stream().map(mapper::toPromotionResponse).toList())
+                .build();
     }
 }

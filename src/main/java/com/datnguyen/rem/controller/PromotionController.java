@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,13 @@ public class PromotionController {
     ResponseEntity<?> addPromotion(@Valid @RequestBody PromotionRequest promotionRequest){
         service.addPromotion(promotionRequest);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Add Success").build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+    @GetMapping()
+    ResponseEntity<?> getList(Pageable pageable,
+                              @RequestParam(required = false) String... promotion){
+        var result=service.getList(pageable,promotion);
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(result).build();
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping("/{id}")

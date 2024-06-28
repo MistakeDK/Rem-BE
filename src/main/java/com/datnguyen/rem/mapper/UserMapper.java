@@ -11,6 +11,8 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -29,14 +31,14 @@ public interface UserMapper {
     User toUserFromOutBound(OutboundUserResponse response);
     @AfterMapping
     default void SetProperty(@MappingTarget User target,OutboundUserResponse response){
+        PasswordEncoder passwordEncoder=new BCryptPasswordEncoder(10);
         target.setUsername(response.getGivenName());
         target.setIsBan(false);
         target.setIsActive(true);
         target.setRole(Role.USER);
         target.setUserProvide(UserProvide.GOOGLE);
+        target.setPassword(passwordEncoder.encode("12345678"));
     }
-
-
 
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
     UserResponse toUserResponse(User user);

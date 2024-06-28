@@ -1,6 +1,7 @@
 package com.datnguyen.rem.entity;
 
 import com.datnguyen.rem.entity.eventListener.CategoryListener;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -23,6 +24,6 @@ public class Category extends AbstractEntity {
     String id;
     String name;
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     Set<Product> products;
 }
