@@ -63,6 +63,12 @@ public class OrderServiceImpl implements OrderService {
                 .totalPage(listOrder.getTotalPages())
                 .build();
     }
+
+    @Override
+    public PageResponse<?> getList(Pageable pageable, String[] order) {
+        return null;
+    }
+
     public static Double calculateTotal(Order order){
         Double total=order.getOrderDetails().stream()
                 .map(item->item.getPrice()*item.getQuantity()).reduce((double) 0,(Double::sum));

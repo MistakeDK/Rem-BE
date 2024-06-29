@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +32,11 @@ public class OrderController {
                 .result(listOrder)
                 .build();
         return ResponseEntity.ok().body(apiResponse);
+    }
+    @GetMapping("/getList")
+    ResponseEntity<ApiResponse<?>> getList(Pageable pageable,
+                                           @RequestParam(required = false) String... order){
+        var listOrder=service.getList(pageable,order);
+        return ResponseEntity.ok().build();
     }
 }
