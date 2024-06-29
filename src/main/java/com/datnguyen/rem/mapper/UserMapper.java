@@ -25,6 +25,7 @@ public interface UserMapper {
         target.setIsBan(false);
         target.setIsActive(false);
         target.setRole(Role.USER);
+        target.setUserProvide(UserProvide.LOCAL);
         target.setVerificationCode(randomCode);
     }
     @Mapping(ignore = true,target = "id")
@@ -41,5 +42,6 @@ public interface UserMapper {
     }
 
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
+
     UserResponse toUserResponse(User user);
 }

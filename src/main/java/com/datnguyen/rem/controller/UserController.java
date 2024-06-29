@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,11 +38,12 @@ public class UserController {
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping
-    ResponseEntity<ApiResponse<?>> getList(){
+    ResponseEntity<ApiResponse<?>> getList(Pageable pageable,
+                                           @RequestParam(required = false) String... user){
         var authentication=SecurityContextHolder.getContext().getAuthentication();
-        log.info(authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-        ApiResponse<?> apiResponse=ApiResponse.builder().result(userServiceImpl.getList()).build();
+        var listUser=userServiceImpl.getList(pageable,user);
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(listUser).build();
         return ResponseEntity.ok().body(apiResponse);
     }
     @PreAuthorize("hasAuthority('ADMIN')")

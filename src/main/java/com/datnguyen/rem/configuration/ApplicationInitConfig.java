@@ -2,6 +2,7 @@ package com.datnguyen.rem.configuration;
 import com.datnguyen.rem.entity.Category;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.enums.Role;
+import com.datnguyen.rem.enums.UserProvide;
 import com.datnguyen.rem.repository.CategoryRepository;
 import com.datnguyen.rem.repository.UserRepository;
 import lombok.AccessLevel;
@@ -29,6 +30,7 @@ public class ApplicationInitConfig {
                 user.setIsActive(true);
                 user.setIsBan(false);
                 user.setPassword(passwordEncoder.encode("12345678"));
+                user.setUserProvide(UserProvide.LOCAL);
                 userRepository.save(user);
                 log.warn("admin user has been created with default password: admin,please change password");
             }

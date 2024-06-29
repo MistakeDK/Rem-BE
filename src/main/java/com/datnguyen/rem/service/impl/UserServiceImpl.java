@@ -3,6 +3,7 @@ package com.datnguyen.rem.service.impl;
 import com.datnguyen.rem.dto.request.ChangePasswordRequest;
 import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
+import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.dto.response.UserResponse;
 import com.datnguyen.rem.entity.User;
 import com.datnguyen.rem.enums.UserProvide;
@@ -10,7 +11,9 @@ import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.UserMapper;
 import com.datnguyen.rem.repository.UserRepository;
+import com.datnguyen.rem.repository.specification.GenericSpecificationBuilder;
 import com.datnguyen.rem.service.UserService;
+import com.datnguyen.rem.utils.SpecificationUtils;
 import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -18,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,18 +53,13 @@ public class UserServiceImpl implements UserService {
         }
         User user=userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setUserProvide(UserProvide.LOCAL);
         userRepository.save(user);
         mailServiceImpl.sendVerificationEmail(user);
         baseRedisService.hashSet(user.getUsername(),"verificationCode",user.getVerificationCode());
         baseRedisService.SetTimeToLive(user.getUsername(),300);// expire in 5 minutes
         return userMapper.toUserResponse(user);
     }
-    @Override
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<UserResponse> getList(){
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
-    }
+
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUser(String id){
@@ -109,5 +109,25 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public PageResponse<?> getList(Pageable pageable, String[] user) {
+        Page<User> userPage=null;
+        if(user!=null){
+            GenericSpecificationBuilder<User> builder=new GenericSpecificationBuilder<>();
+            SpecificationUtils.ConvertFormStringToSpecification(builder,user);
+            userPage=userRepository.findAll(builder.build(User.class),pageable);
+        }
+        else {
+            userPage=userRepository.findAll(pageable);
+        }
+        return PageResponse.builder()
+                .pageNo(userPage.getNumber())
+                .pageSize(userPage.getSize())
+                .items(userPage.getContent().stream().map(userMapper::toUserResponse).toList())
+                .totalItem(userPage.getTotalElements())
+                .totalPage(userPage.getTotalPages())
+                .build();
     }
 }

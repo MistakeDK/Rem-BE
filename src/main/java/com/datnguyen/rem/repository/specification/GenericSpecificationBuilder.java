@@ -33,7 +33,6 @@ public class GenericSpecificationBuilder<T> {
         if (params.isEmpty()) {
             return null;
         }
-
         Specification<T> specification = new GenericSpecification<>(params.get(0)) {};
         for (int i = 1; i < params.size(); i++) {
             specification = params.get(i).getOrPredicate()

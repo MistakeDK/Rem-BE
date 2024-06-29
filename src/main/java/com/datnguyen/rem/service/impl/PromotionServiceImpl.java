@@ -10,6 +10,7 @@ import com.datnguyen.rem.mapper.PromotionMapper;
 import com.datnguyen.rem.repository.PromotionRepository;
 import com.datnguyen.rem.repository.specification.GenericSpecificationBuilder;
 import com.datnguyen.rem.service.PromotionService;
+import com.datnguyen.rem.utils.SpecificationUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -64,13 +65,7 @@ public class PromotionServiceImpl implements PromotionService {
         Page<Promotion> promotions=null;
         if(promotion!=null){
             GenericSpecificationBuilder<Promotion> builder =new GenericSpecificationBuilder<>();
-            for (String p:promotion){
-                Pattern pattern=Pattern.compile("(\\w+?)([:<>~!])(.*)(\\p{Punct}?)(.*)(\\p{Punct}?)");
-                Matcher matcher=pattern.matcher(p);
-                if(matcher.find()){
-                    builder.with(matcher.group(1),matcher.group(2),matcher.group(3),matcher.group(4),matcher.group(5));
-                }
-            }
+            SpecificationUtils.ConvertFormStringToSpecification(builder,promotion);
             promotions=repository.findAll(builder.build(Promotion.class),pageable);
         }
         else {
