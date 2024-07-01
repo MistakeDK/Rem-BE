@@ -86,4 +86,12 @@ public class UserController {
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Password has been change success").build();
         return ResponseEntity.ok().body(apiResponse);
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/changeStatus/{email}")
+    ResponseEntity<?> changeStatus(@PathVariable String email){
+        userServiceImpl.changeStatus(email);
+        ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Status User success").build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+
 }

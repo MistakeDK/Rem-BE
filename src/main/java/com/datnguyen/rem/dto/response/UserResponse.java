@@ -17,4 +17,5 @@ public class UserResponse {
     LocalDate dob;
     String role;
     String userProvide;
+    Boolean isBan;
 }

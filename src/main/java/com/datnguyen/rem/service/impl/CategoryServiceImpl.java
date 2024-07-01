@@ -46,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .pageNo(categoryPage.getNumber())
                 .pageSize(categoryPage.getSize())
                 .totalPage(categoryPage.getTotalPages())
+                .totalItem(categoryPage.getTotalElements())
                 .items(categoryPage.getContent().stream().map(categoryMapper::toCategoryResponse).toList())
                 .build();
     }

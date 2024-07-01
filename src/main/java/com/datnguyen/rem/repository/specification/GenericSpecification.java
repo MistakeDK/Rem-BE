@@ -17,7 +17,7 @@ public class GenericSpecification<T> implements Specification<T> {
     @Override
     public Predicate toPredicate(@NonNull Root<T> root,@NonNull CriteriaQuery<?> query,@NonNull CriteriaBuilder criteriaBuilder) {
         return switch (criteria.getOperation()) {
-            case EQUALITY -> criteriaBuilder.equal(root.get(criteria.getKey()), checkAndConvertEnum(root, criteria.getKey(), criteria.getValue()));
+            case EQUALITY -> criteriaBuilder.equal(root.get(criteria.getKey()), checkAndConvert(root, criteria.getKey(), criteria.getValue()));
             case NEGATION -> criteriaBuilder.notEqual(root.get(criteria.getKey()), criteria.getValue());
             case GREATER_THAN -> criteriaBuilder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
             case LESS_THAN -> criteriaBuilder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
@@ -26,9 +26,11 @@ public class GenericSpecification<T> implements Specification<T> {
             case ENDS_WITH -> criteriaBuilder.like(root.get(criteria.getKey()), "%" + criteria.getValue().toString());
         };
     }
-    private Object checkAndConvertEnum(Root<?> root, String key, Object value) {
-        Class<?> javaType = root.get(key).getJavaType();
-        if (javaType.isEnum()) {
+    private Object checkAndConvert(Root<?> root, String key, Object value) {
+        Class<?> javaType=root.get(key).getJavaType();
+        if(javaType== Boolean.class){
+            return Boolean.valueOf(value.toString());
+        }else if (root.get(key).getJavaType().isEnum()) {
             return Enum.valueOf((Class<Enum>) javaType, value.toString());
         }
         return value;

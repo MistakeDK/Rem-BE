@@ -8,11 +8,14 @@ import com.datnguyen.rem.repository.CartDetailRepository;
 import com.datnguyen.rem.repository.OrderDetailRepository;
 import com.datnguyen.rem.repository.OrderRepository;
 import com.datnguyen.rem.repository.PromotionRepository;
+import com.datnguyen.rem.repository.specification.GenericSpecificationBuilder;
 import com.datnguyen.rem.service.OrderService;
+import com.datnguyen.rem.utils.SpecificationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -66,7 +69,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageResponse<?> getList(Pageable pageable, String[] order) {
-        return null;
+        Page<Order> orderPage=null;
+        if(order!=null){
+            GenericSpecificationBuilder<Order> builder=new GenericSpecificationBuilder<>();
+            SpecificationUtils.ConvertFormStringToSpecification(builder,order);
+            orderPage=orderRepository.findAll(builder.build(Order.class),pageable);
+        }else {
+            orderPage=orderRepository.findAll(pageable);
+        }
+        return PageResponse.builder()
+                .totalItem(orderPage.getTotalElements())
+                .totalPage(orderPage.getTotalPages())
+                .pageNo(orderPage.getNumber())
+                .pageSize(orderPage.getSize())
+                .items(orderPage.map(orderMapper::toOrderResponseForAdmin).toList())
+                .build();
     }
 
     public static Double calculateTotal(Order order){

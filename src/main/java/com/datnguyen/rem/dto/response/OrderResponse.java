@@ -4,6 +4,7 @@ import com.datnguyen.rem.entity.OrderDetail;
 import com.datnguyen.rem.enums.OrderStatus;
 import com.datnguyen.rem.enums.PaymentType;
 import com.datnguyen.rem.enums.PromotionType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponse {
     String id;
     Date time_Create;

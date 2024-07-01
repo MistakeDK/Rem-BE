@@ -130,4 +130,11 @@ public class UserServiceImpl implements UserService {
                 .totalPage(userPage.getTotalPages())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void changeStatus(String email) {
+        var user=userRepository.findByEmail(email).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
+        user.setIsBan(!user.getIsBan());
+    }
 }

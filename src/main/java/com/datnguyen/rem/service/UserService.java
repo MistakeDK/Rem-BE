@@ -25,4 +25,6 @@ public interface UserService {
     void ChangePassword(ChangePasswordRequest request, String id);
 
     PageResponse<?> getList(Pageable pageable, String[] user);
+
+    void changeStatus(String email);
 }

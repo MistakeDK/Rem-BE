@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 
-@Mapper(componentModel = "spring",uses = {OrderDetailMapper.class, PromotionRepository.class})
+@Mapper(componentModel = "spring",uses = {OrderDetailMapper.class})
 public interface OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "promotionCode",target = "promotion.promotionCode")
@@ -48,6 +48,8 @@ public interface OrderMapper {
     @Mapping(source = "paymentType",target = "paymentType")
     @Mapping(source = "id",target = "id")
     OrderResponse toOrderResponse(Order order);
+    @Mapping(target = "orderDetails",ignore = true)
+    OrderResponse toOrderResponseForAdmin(Order order);
 
 
 }

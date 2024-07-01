@@ -37,6 +37,8 @@ public class OrderController {
     ResponseEntity<ApiResponse<?>> getList(Pageable pageable,
                                            @RequestParam(required = false) String... order){
         var listOrder=service.getList(pageable,order);
-        return ResponseEntity.ok().build();
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(listOrder).build();
+        return ResponseEntity.ok().body(apiResponse);
     }
+
 }
