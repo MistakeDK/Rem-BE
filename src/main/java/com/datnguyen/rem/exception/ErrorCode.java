@@ -34,7 +34,9 @@ public enum ErrorCode {
     PROMOTION_VALUE_IS_EMPTY(1305,"Promotion value is empty",HttpStatus.BAD_REQUEST),
     PROMOTION_IS_NOT_ACTIVE(1306,"Promotion is not active",HttpStatus.BAD_REQUEST),
     REVIEW_OF_PRODUCT_AND_ORDER_EXISTED(1400,"Review of the order and product already exists",HttpStatus.BAD_REQUEST),
-    PRODUCT_NOT_EXISTED_IN_ORDER(1401,"product is not existed in order",HttpStatus.NOT_FOUND);
+    PRODUCT_NOT_EXISTED_IN_ORDER(1401,"product is not existed in order",HttpStatus.BAD_REQUEST),
+    ORDER_NOT_EXISTED(1500,"Order Not Exist",HttpStatus.BAD_REQUEST),
+    ORDER_NOT_CHANGE_STATUS(1501,"Order has been DELIVERED",HttpStatus.BAD_REQUEST);
     final long codeException;
     final String message;
     final HttpStatus statusCode;

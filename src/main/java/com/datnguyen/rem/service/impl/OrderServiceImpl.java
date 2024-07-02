@@ -1,8 +1,12 @@
 package com.datnguyen.rem.service.impl;
 
 import com.datnguyen.rem.dto.request.OrderRequest;
+import com.datnguyen.rem.dto.response.OrderResponse;
 import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.entity.Order;
+import com.datnguyen.rem.enums.OrderStatus;
+import com.datnguyen.rem.exception.AppException;
+import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.OrderMapper;
 import com.datnguyen.rem.repository.CartDetailRepository;
 import com.datnguyen.rem.repository.OrderDetailRepository;
@@ -84,6 +88,26 @@ public class OrderServiceImpl implements OrderService {
                 .pageSize(orderPage.getSize())
                 .items(orderPage.map(orderMapper::toOrderResponseForAdmin).toList())
                 .build();
+    }
+
+    @Override
+    public OrderResponse getById(String id) {
+        var order=orderRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.ORDER_NOT_EXISTED));
+        return orderMapper.toOrderResponse(order);
+    }
+
+    @Override
+    @Transactional
+    public void changeStatus(String id) {
+        var order=orderRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.ORDER_NOT_EXISTED));
+        switch (order.getStatus()) {
+            case RECEIVED -> order.setStatus(OrderStatus.IN_DELIVERY);
+            case IN_DELIVERY -> {
+                order.setStatus(OrderStatus.DELIVERED);
+                order.setIsPaid(true);
+            }
+            case DELIVERED -> throw new AppException(ErrorCode.ORDER_NOT_CHANGE_STATUS);
+        }
     }
 
     public static Double calculateTotal(Order order){

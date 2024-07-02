@@ -1,6 +1,7 @@
 package com.datnguyen.rem.service;
 
 import com.datnguyen.rem.dto.request.OrderRequest;
+import com.datnguyen.rem.dto.response.OrderResponse;
 import com.datnguyen.rem.dto.response.PageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -10,4 +11,8 @@ public interface OrderService {
     PageResponse<?> getAllOrderByIdUser(String id,int pageNo,int pageSize);
 
     PageResponse<?> getList(Pageable pageable, String[] order);
+
+    OrderResponse getById(String id);
+
+    void changeStatus(String id);
 }

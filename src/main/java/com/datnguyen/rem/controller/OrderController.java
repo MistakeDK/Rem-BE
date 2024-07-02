@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class OrderController {
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping("/{idUser}")
+    @PreAuthorize("hasAuthority('USER')")
     ResponseEntity<ApiResponse<?>> getOrderByIdUser(@PathVariable("idUser") String id,
                                                     @RequestParam(defaultValue = "0",required = false) int pageNo,
                                                     @RequestParam(defaultValue = "4",required = false) int pageSize){
@@ -34,11 +36,25 @@ public class OrderController {
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping("/getList")
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<ApiResponse<?>> getList(Pageable pageable,
                                            @RequestParam(required = false) String... order){
         var listOrder=service.getList(pageable,order);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(listOrder).build();
         return ResponseEntity.ok().body(apiResponse);
     }
-
+    @GetMapping("/getById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    ResponseEntity<?> getById(@PathVariable String id){
+        var order=service.getById(id);
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(order).build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
+    @PatchMapping("/changeStatus/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    ResponseEntity<?> ChangeStatus(@PathVariable String id){
+        service.changeStatus(id);
+        ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Status Order Success").build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
 }

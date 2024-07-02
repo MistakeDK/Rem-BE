@@ -27,6 +27,7 @@ public class PromotionController {
         return ResponseEntity.ok().body(apiResponse);
     }
     @GetMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<?> getList(Pageable pageable,
                               @RequestParam(required = false) String... promotion){
         var result=service.getList(pageable,promotion);

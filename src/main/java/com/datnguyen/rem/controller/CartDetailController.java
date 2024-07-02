@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,12 +20,14 @@ import org.springframework.web.bind.annotation.*;
 public class CartDetailController {
     CartDetailServiceImpl cartDetailServiceImpl;
     @GetMapping("/getList/{idUser}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<ApiResponse<?>> getList(@PathVariable(name = "idUser") String id ){
         var cartResponse= cartDetailServiceImpl.getList(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(cartResponse).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @PostMapping("/changeQuantity/{idUser}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<ApiResponse<?>>  ChangeQuantity(@Valid @RequestBody CartDetailRequest request,
                                                    @PathVariable String idUser)
             throws JsonProcessingException {
