@@ -2,6 +2,7 @@ package com.datnguyen.rem.service.impl;
 
 import com.datnguyen.rem.dto.request.OrderRequest;
 import com.datnguyen.rem.dto.response.OrderResponse;
+import com.datnguyen.rem.dto.response.OrderStatResponse;
 import com.datnguyen.rem.dto.response.PageResponse;
 import com.datnguyen.rem.entity.Order;
 import com.datnguyen.rem.enums.OrderStatus;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @FieldDefaults(makeFinal = true)
@@ -108,6 +111,11 @@ public class OrderServiceImpl implements OrderService {
             }
             case DELIVERED -> throw new AppException(ErrorCode.ORDER_NOT_CHANGE_STATUS);
         }
+    }
+
+    @Override
+    public List<OrderStatResponse> getStat() {
+        return orderRepository.getStatOrder();
     }
 
     public static Double calculateTotal(Order order){

@@ -86,7 +86,7 @@ public class UserController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/stat")
     ResponseEntity<?> getStat(){
         var result= userServiceImpl.getStat();

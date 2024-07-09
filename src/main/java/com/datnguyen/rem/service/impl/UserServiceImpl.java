@@ -142,8 +142,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ADMIN')")
     public List<StatUserResponse> getStat() {
-        return userRepository.countUsersByUserProvideInLast7Days();
+        return userRepository.countUsersByUserProvide();
     }
 }

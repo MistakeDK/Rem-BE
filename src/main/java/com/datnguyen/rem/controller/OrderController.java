@@ -57,4 +57,11 @@ public class OrderController {
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Status Order Success").build();
         return ResponseEntity.ok().body(apiResponse);
     }
+    @GetMapping("/getStat")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    ResponseEntity<?> getStat(){
+        var result=service.getStat();
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(result).build();
+        return ResponseEntity.ok().body(apiResponse);
+    }
 }

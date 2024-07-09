@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<User,String>, JpaSpecifica
     @Query("SELECT new com.datnguyen.rem.dto.response.StatUserResponse(u.userProvide, COUNT(u)) " +
             "FROM User u " +
             "GROUP BY u.userProvide")
-    List<StatUserResponse> countUsersByUserProvideInLast7Days();
+    List<StatUserResponse> countUsersByUserProvide();
 }
