@@ -4,9 +4,9 @@ import com.datnguyen.rem.dto.request.ChangePasswordRequest;
 import com.datnguyen.rem.dto.request.UserCreationRequest;
 import com.datnguyen.rem.dto.request.UserUpdateRequest;
 import com.datnguyen.rem.dto.response.PageResponse;
+import com.datnguyen.rem.dto.response.StatUserResponse;
 import com.datnguyen.rem.dto.response.UserResponse;
 import com.datnguyen.rem.entity.User;
-import com.datnguyen.rem.enums.UserProvide;
 import com.datnguyen.rem.exception.AppException;
 import com.datnguyen.rem.exception.ErrorCode;
 import com.datnguyen.rem.mapper.UserMapper;
@@ -18,6 +18,7 @@ import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,13 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,11 +87,6 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUser(user,request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
-    }
-    @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(String id){
-        userRepository.deleteById(id);
     }
     @Override
     @Transactional
@@ -136,5 +139,11 @@ public class UserServiceImpl implements UserService {
     public void changeStatus(String email) {
         var user=userRepository.findByEmail(email).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXIST));
         user.setIsBan(!user.getIsBan());
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<StatUserResponse> getStat() {
+        return userRepository.countUsersByUserProvideInLast7Days();
     }
 }

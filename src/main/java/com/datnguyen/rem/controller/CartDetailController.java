@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.*;
 public class CartDetailController {
     CartDetailServiceImpl cartDetailServiceImpl;
     @GetMapping("/getList/{idUser}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     ResponseEntity<ApiResponse<?>> getList(@PathVariable(name = "idUser") String id ){
         var cartResponse= cartDetailServiceImpl.getList(id);
         ApiResponse<?> apiResponse=ApiResponse.builder().result(cartResponse).build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @PostMapping("/changeQuantity/{idUser}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     ResponseEntity<ApiResponse<?>>  ChangeQuantity(@Valid @RequestBody CartDetailRequest request,
                                                    @PathVariable String idUser)
             throws JsonProcessingException {

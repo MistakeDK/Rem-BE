@@ -64,14 +64,6 @@ public class UserController {
         ApiResponse<?> apiResponse=ApiResponse.builder().result(userServiceImpl.updateUser(id,request)).build();
         return ResponseEntity.ok().body(apiResponse);
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{idUser}")
-    ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable("idUser") String id){
-        var context=SecurityContextHolder.getContext();
-        userServiceImpl.deleteUser(id);
-        ApiResponse<?> apiResponse=ApiResponse.builder().message("delete success").build();
-        return ResponseEntity.ok().body(apiResponse);
-    }
     @PatchMapping("/{username}")
     ResponseEntity<?> processVerifyUser(@RequestParam String code,
                                         @PathVariable String username){
@@ -92,6 +84,14 @@ public class UserController {
         userServiceImpl.changeStatus(email);
         ApiResponse<?> apiResponse=ApiResponse.builder().message("Change Status User success").build();
         return ResponseEntity.ok().body(apiResponse);
+    }
+
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/stat")
+    ResponseEntity<?> getStat(){
+        var result= userServiceImpl.getStat();
+        ApiResponse<?> apiResponse=ApiResponse.builder().result(result).build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
