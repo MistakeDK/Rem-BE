@@ -9,11 +9,7 @@
 
 1. Clone the repository
 2. Change env variable to run with your env in application.yaml
-3. Default Admin Account
-   
 After the first run, you can log in with the following admin account:
-
 - Username: admin
-
 - Password: 12345678
-   
+> Note: You need to run the React app from this repository for it to work with the server
